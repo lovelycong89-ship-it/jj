@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>아이 식단 만들기 (초보용)</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif; margin: 0; background:#f6f7fb; }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 20px; }
+    .card { background: #fff; border-radius: 14px; padding: 16px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); margin-bottom: 14px; }
+    h1 { font-size: 20px; margin: 0 0 10px; }
+    h2 { font-size: 16px; margin: 16px 0 8px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 700px) { .row { grid-template-columns: 1fr; } }
+    label { font-size: 13px; color: #333; display:block; margin-bottom: 4px; }
+    input, select { width: 100%; padding: 10px; border: 1px solid #dfe3ee; border-radius: 10px; font-size: 14px; }
+    .checks { display:flex; flex-wrap: wrap; gap: 10px; }
+    .check { display:flex; align-items:center; gap: 6px; padding: 8px 10px; border: 1px solid #e6e9f3; border-radius: 999px; background:#fafbff; }
+    .btns { display:flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    button { border: 0; border-radius: 12px; padding: 11px 14px; font-size: 14px; cursor:pointer; }
+    .primary { background:#2f6fed; color:#fff; }
+    .ghost { background:#eef3ff; color:#1c3b84; }
+    .muted { color:#596274; font-size: 13px; line-height: 1.45; }
+    .out { white-space: pre-wrap; font-size: 14px; line-height: 1.55; }
+    .warn { background:#fff7e6; border:1px solid #ffe0a3; padding: 10px; border-radius: 12px; }
+    .pill { display:inline-block; padding: 4px 10px; border-radius: 999px; background:#f1f4ff; font-size: 12px; margin-right:6px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>아이 식단 만들기 (초보용)</h1>
+      <div class="muted">
+        이 프로그램은 “식단 아이디어”를 만들어 줍니다. 아이가 <b>질환</b>이 있거나, <b>특정 식이 제한</b>이 있거나,
+        <b>성장(키·몸무게)</b> 때문에 고민이 크면 소아과/영양사와 꼭 상의하세요.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>아이 정보 입력</h2>
+      <div class="row">
+        <div>
+          <label>아이 생년월일</label>
+          <input id="dob" type="date" />
+        </div>
+        <div>
+          <label>성별(선택)</label>
+          <select id="sex">
+            <option value="">선택 안 함</option>
+            <option value="M">남</option>
+            <option value="F">여</option>
+          </select>
+        </div>
+        <div>
+          <label>키(cm)</label>
+          <input id="height" type="number" placeholder="예: 102" min="30" max="220" />
+        </div>
+        <div>
+          <label>몸무게(kg)</label>
+          <input id="weight" type="number" placeholder="예: 16.5" min="2" max="150" step="0.1" />
+        </div>
+        <div>
+          <label>활동량(대충)</label>
+          <select id="activity">
+            <option value="low">낮음 (움직임 적음)</option>
+            <option value="mid" selected>보통</option>
+            <option value="high">높음 (많이 뛰어놈)</option>
+          </select>
+        </div>
+        <div>
+          <label>목표(선택)</label>
+          <select id="goal">
+            <option value="maintain" selected>유지(일반)</option>
+            <option value="gain">살(체중) 조금 늘리고 싶음</option>
+            <option value="loss">살(체중) 조금 줄이고 싶음</option>
+          </select>
+        </div>
+      </div>
+
+      <h2>알레르기/피하고 싶은 것(선택)</h2>
+      <div class="checks" id="allergyBox">
+        <label class="check"><input type="checkbox" value="egg">달걀</label>
+        <label class="check"><input type="checkbox" value="dairy">우유/유제품</label>
+        <label class="check"><input type="checkbox" value="nuts">견과류</label>
+        <label class="check"><input type="checkbox" value="fish">생선/해산물</label>
+        <label class="check"><input type="checkbox" value="wheat">밀(빵/면)</label>
+        <label class="check"><input type="checkbox" value="soy">콩(두부/두유 포함)</label>
+        <label class="check"><input type="checkbox" value="pork">돼지고기</label>
+        <label class="check"><input type="checkbox" value="beef">소고기</label>
+        <label class="check"><input type="checkbox" value="chicken">닭고기</label>
+      </div>
+
+      <div class="btns">
+        <button class="primary" id="btnMake">오늘 식단 만들기</button>
+        <button class="ghost" id="btnWeek">7일치 식단 만들기</button>
+        <button class="ghost" id="btnReset">초기화</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>결과</h2>
+      <div class="warn muted">
+        <span class="pill">중요</span>
+        키/몸무게는 여기서 <b>BMI</b>(몸무게÷키²)까지만 계산합니다. 아이는 “정상/비만”을 BMI 하나로 판단하지 않고
+        <b>성장도표(백분위수)</b>가 필요합니다. (질병관리청 성장도표/계산기 참고)
+      </div>
+      <div class="out" id="output" style="margin-top:10px;">입력 후 “오늘 식단 만들기”를 눌러주세요.</div>
+    </div>
+
+    <div class="card">
+      <h2>균형 식사 기준(간단)</h2>
+      <div class="muted">
+        아래 기준은 “식품구성자전거”에서 흔히 쓰는 식품군(곡류/단백질/채소/과일/유제품 등) 개념을 쉽게 풀어 쓴 것입니다.
+        <br><br>
+        • 곡류(밥·빵·면·감자 등): 하루 3~4번 정도<br>
+        • 단백질(고기·생선·달걀·콩류): 하루 3~4번 정도<br>
+        • 채소: 매 끼니 1~2가지 이상<br>
+        • 과일: 하루 1~2개 정도<br>
+        • 우유/유제품: 하루 1~2번 정도<br>
+        • 기름/당류: 양념으로 적당량(과하면 줄이기)
+      </div>
+    </div>
+  </div>
+
+<script>
+  // ===== 메뉴 데이터(아주 단순) =====
+  const carb = [
+    {name:"밥", tags:[]},
+    {name:"잡곡밥", tags:[]},
+    {name:"죽(야채죽)", tags:[]},
+    {name:"감자/고구마", tags:[]},
+    {name:"식빵/토스트", tags:["wheat"]},
+    {name:"국수(잔치국수)", tags:["wheat"]},
+    {name:"오트밀", tags:[]},
+  ];
+
+  const protein = [
+    {name:"계란찜/계란말이", tags:["egg"]},
+    {name:"두부부침/두부조림", tags:["soy"]},
+    {name:"닭가슴살/닭볶음(맵지 않게)", tags:["chicken"]},
+    {name:"소고기장조림(짜지 않게)", tags:["beef"]},
+    {name:"돼지고기수육/불고기(짜지 않게)", tags:["pork"]},
+    {name:"흰살생선구이", tags:["fish"]},
+    {name:"콩/병아리콩(삶은 것)", tags:["soy"]},
+  ];
+
+  const veg = [
+    {name:"브로콜리/당근", tags:[]},
+    {name:"오이/파프리카", tags:[]},
+    {name:"시금치나물", tags:[]},
+    {name:"애호박볶음", tags:[]},
+    {name:"미역/김(짠 건 줄이기)", tags:[]},
+    {name:"버섯볶음", tags:[]},
+    {name:"김치(아주 조금)", tags:[]},
+  ];
+
+  const fruit = [
+    {name:"바나나", tags:[]},
+    {name:"사과", tags:[]},
+    {name:"배", tags:[]},
+    {name:"딸기/블루베리", tags:[]},
+    {name:"귤", tags:[]},
+    {name:"수박(철일 때)", tags:[]},
+  ];
+
+  const dairy = [
+    {name:"우유", tags:["dairy"]},
+    {name:"플레인요거트", tags:["dairy"]},
+    {name:"치즈(조금)", tags:["dairy"]},
+  ];
+
+  const snacks = [
+    {name:"과일", tags:[]},
+    {name:"요거트", tags:["dairy"]},
+    {name:"견과류(아주 조금)", tags:["nuts"]},
+    {name:"고구마", tags:[]},
+    {name:"치즈", tags:["dairy"]},
+    {name:"삶은 달걀", tags:["egg"]},
+    {name:"두유", tags:["soy"]},
+  ];
+
+  function pick(list, forbiddenTags) {
+    const ok = list.filter(x => !(x.tags || []).some(t => forbiddenTags.has(t)));
+    if (ok.length === 0) return null;
+    return ok[Math.floor(Math.random() * ok.length)];
+  }
+
+  function ageInfo(dobStr) {
+    if (!dobStr) return null;
+    const dob = new Date(dobStr);
+    const now = new Date();
+    if (isNaN(dob.getTime())) return null;
+
+    let months = (now.getFullYear() - dob.getFullYear()) * 12 + (now.getMonth() - dob.getMonth());
+    if (now.getDate() < dob.getDate()) months -= 1;
+    if (months < 0) months = 0;
+
+    const years = Math.floor(months / 12);
+    const remMonths = months % 12;
+
+    // 나이 그룹
+    let group = "3~5세";
+    if (months < 12) group = "0~11개월";
+    else if (years <= 2) group = "1~2세";
+    else if (years <= 5) group = "3~5세";
+    else if (years <= 8) group = "6~8세";
+    else if (years <= 11) group = "9~11세";
+    else if (years <= 14) group = "12~14세";
+    else group = "15~18세";
+
+    return {months, years, remMonths, group};
+  }
+
+  function bmi(heightCm, weightKg) {
+    const h = Number(heightCm);
+    const w = Number(weightKg);
+    if (!h || !w) return null;
+    const m = h / 100;
+    const v = w / (m * m);
+    return Math.round(v * 10) / 10;
+  }
+
+  function snackCountByAgeMonths(m) {
+    // 아주 대충: 어릴수록 간식 2회, 커지면 1~2회
+    if (m < 12) return 0;
+    if (m <= 36) return 2;
+    if (m <= 120) return 2;
+    return 1;
+  }
+
+  function makeOneDayPlan(forbiddenTags, age, goal, activity) {
+    const c1 = pick(carb, forbiddenTags);
+    const p1 = pick(protein, forbiddenTags);
+    const v1 = pick(veg, forbiddenTags);
+    const f1 = pick(fruit, forbiddenTags);
+    const d1 = pick(dairy, forbiddenTags);
+
+    const c2 = pick(carb, forbiddenTags);
+    const p2 = pick(protein, forbiddenTags);
+    const v2a = pick(veg, forbiddenTags);
+    const v2b = pick(veg, forbiddenTags);
+    const f2 = pick(fruit, forbiddenTags);
+
+    const c3 = pick(carb, forbiddenTags);
+    const p3 = pick(protein, forbiddenTags);
+    const v3a = pick(veg, forbiddenTags);
+    const v3b = pick(veg, forbiddenTags);
+    const f3 = pick(fruit, forbiddenTags);
+
+    const sc = snackCountByAgeMonths(age.months);
+    const snackList = [];
+    for (let i = 0; i < sc; i++) {
+      const s = pick(snacks, forbiddenTags);
+      if (s) snackList.push(s.name);
+    }
+
+    // 목표/활동량에 따른 아주 단순한 문구 조절(의학 판단 아님)
+    let tip = "양은 아이의 배고픔/활동량에 맞추고, 단 음식·단 음료는 자주 주지 않기.";
+    if (goal === "gain") tip = "체중을 늘리고 싶으면: 간식은 ‘과일+요거트/우유’ 같이 영양 있는 조합으로.";
+    if (goal === "loss") tip = "체중을 줄이고 싶으면: 단 음료/과자 대신 ‘과일/채소/요거트(무가당)’ 위주로.";
+    if (activity === "high") tip += " (활동량이 많으면: 밥/감자 같은 곡류를 너무 줄이지 말기.)";
+
+    // 구성(국/반찬 등)은 문장으로만
+    const breakfast = `아침: ${c1?.name || "곡류"} + ${p1?.name || "단백질"} + ${v1?.name || "채소"} + ${(d1? d1.name : "과일/유제품")} + ${f1?.name || "과일"}`;
+    const lunch = `점심: ${c2?.name || "곡류"} + (국/찌개는 맵지 않게) + ${p2?.name || "단백질"} + ${v2a?.name || "채소"} + ${v2b?.name || "채소"} + ${f2?.name || "과일"}`;
+    const dinner = `저녁: ${c3?.name || "곡류"} + (국/찌개는 짜지 않게) + ${p3?.name || "단백질"} + ${v3a?.name || "채소"} + ${v3b?.name || "채소"} + ${f3?.name || "과일"}`;
+    const snackText = snackList.length ? `간식(${snackList.length}회): ${snackList.join(" / ")}` : "간식: (필요하면) 과일/요거트/고구마 같은 간단한 것";
+
+    return {breakfast, lunch, dinner, snackText, tip};
+  }
+
+  function forbiddenFromUI() {
+    const set = new Set();
+    document.querySelectorAll("#allergyBox input[type=checkbox]:checked").forEach(ch => set.add(ch.value));
+    return set;
+  }
+
+  function fmtAge(age) {
+    if (!age) return "";
+    if (age.months < 12) return `${age.months}개월`;
+    if (age.remMonths === 0) return `${age.years}세`;
+    return `${age.years}세 ${age.remMonths}개월`;
+  }
+
+  function buildOutput(days) {
+    const dobStr = document.getElementById("dob").value;
+    const h = document.getElementById("height").value;
+    const w = document.getElementById("weight").value;
+    const activity = document.getElementById("activity").value;
+    const goal = document.getElementById("goal").value;
+
+    const age = ageInfo(dobStr);
+    const b = bmi(h, w);
+    const forbidden = forbiddenFromUI();
+
+    let header = "";
+    if (!age) header += "• 생년월일을 먼저 입력해 주세요.\n\n";
+    else header += `• 나이: ${fmtAge(age)}  (${age.group})\n`;
+
+    if (b) header += `• BMI(참고): ${b}\n`;
+    else header += `• BMI(참고): 키/몸무게를 입력하면 표시됩니다.\n`;
+
+    header += "\n※ 아이는 BMI 하나로 ‘정상/비만’을 판단하지 않고 성장도표(백분위수)가 필요합니다.\n";
+    header += "  → 검색창에 ‘질병관리청 성장도표 측정 계산기’라고 검색해서 확인해 보세요.\n\n";
+
+    if (age && age.months < 12) {
+      header += "⚠ 12개월 미만(0~11개월)은 이유식/수유 단계가 복잡해서 이 프로그램 대신 소아과/전문 가이드를 권합니다.\n\n";
+    }
+
+    const today = new Date();
+    let out = header;
+
+    for (let i = 0; i < days; i++) {
+      const d = new Date(today.getTime() + i * 24*60*60*1000);
+      const label = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+
+      const plan = age ? makeOneDayPlan(forbidden, age, goal, activity) : null;
+
+      out += `=== ${label} 식단 ===\n`;
+      if (!plan) {
+        out += "생년월일을 입력하면 식단이 만들어집니다.\n\n";
+        continue;
+      }
+      out += `${plan.breakfast}\n${plan.lunch}\n${plan.dinner}\n${plan.snackText}\n`;
+      out += `팁: ${plan.tip}\n\n`;
+    }
+
+    return out.trim();
+  }
+
+  document.getElementById("btnMake").addEventListener("click", () => {
+    document.getElementById("output").textContent = buildOutput(1);
+  });
+
+  document.getElementById("btnWeek").addEventListener("click", () => {
+    document.getElementById("output").textContent = buildOutput(7);
+  });
+
+  document.getElementById("btnReset").addEventListener("click", () => {
+    document.getElementById("dob").value = "";
+    document.getElementById("height").value = "";
+    document.getElementById("weight").value = "";
+    document.getElementById("sex").value = "";
+    document.getElementById("activity").value = "mid";
+    document.getElementById("goal").value = "maintain";
+    document.querySelectorAll("#allergyBox input[type=checkbox]").forEach(ch => ch.checked = false);
+    document.getElementById("output").textContent = "입력 후 “오늘 식단 만들기”를 눌러주세요.";
+  });
+</script>
+</body>
+</html>
