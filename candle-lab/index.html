@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>캔들 읽는 연습장 · CANDLE LAB</title>
+<meta name="description" content="차트 캡처의 캔들 후보를 하나씩 확인하고, 24가지 기본 형태와 패턴을 익히는 오프라인 학습 앱">
+<style>:root{--bg:#f4f6fa;--paper:#fff;--ink:#17243b;--muted:#68788e;--line:#e4e9f1;--accent:#5264e8;--accent-soft:#eef0ff;--up:#df5063;--down:#347ce3;--mint:#087f78;--amber:#966015;--shadow:0 6px 24px #243a5c08;--radius:18px;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR","Malgun Gothic",sans-serif;color:var(--ink);background:var(--bg)}*{box-sizing:border-box}body{margin:0;font-size:14px;line-height:1.6}button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.45}button,input,select,a,summary{outline-offset:3px}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #8995ff}a{color:var(--accent)}button{border:0}h1,h2,h3,p{margin:0}h1{font-size:30px;letter-spacing:-1.1px;line-height:1.3}h2{font-size:17px;letter-spacing:-.4px}h3{font-size:16px}small{font-size:12px}input[type=text],input[type=number],select{border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:white;color:var(--ink);min-width:0}input[type=checkbox]{accent-color:var(--accent)}input[type=color]{width:38px;height:32px;border:1px solid var(--line);border-radius:7px;padding:3px;background:#fff}.layout{display:flex;min-height:100vh}.sidebar{width:214px;flex-shrink:0;background:#142137;color:#d9e2f3;position:fixed;inset:0 auto 0 0;padding:30px 20px;display:flex;flex-direction:column;z-index:20}.brand{display:flex;align-items:center;gap:9px;padding:0 3px;color:#fff}.brand-icon{height:38px;width:38px;flex-shrink:0;border-radius:11px;background:#6b79f8;display:grid;place-items:center}.brand strong{font-size:14px;letter-spacing:.7px;display:block;white-space:nowrap}.brand small{color:#98abc8;font-size:8px;letter-spacing:.55px;display:block;white-space:nowrap}.side-caption{margin:40px 12px 12px;font-size:10px;letter-spacing:2px;color:#7c91b1}.nav-btn{display:flex;align-items:center;gap:12px;text-align:left;width:100%;padding:13px 14px;margin:3px 0;background:transparent;color:#aebed6;border-radius:11px;font-weight:600}.nav-btn svg{width:19px;height:19px;flex-shrink:0}.nav-btn.active{color:#fff;background:#344464}.nav-btn:hover{background:#253752;color:#fff}.side-tip{margin-top:auto;border:1px solid #32425b;background:#1b2b44;padding:17px;border-radius:14px;font-size:12px;color:#a9bdd6}.side-tip strong{display:block;color:#deebff;margin-bottom:7px}.version{font-size:10px;color:#7c91b1;letter-spacing:1.3px;padding:18px 5px 0}.main{margin-left:214px;padding:26px 32px 38px;width:calc(100% - 214px);max-width:1900px}.topline{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.crumb{font-size:12px;color:var(--muted)}.status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mint);background:#e7f5f1;border:1px solid #d6eee6;padding:5px 11px;border-radius:30px}.dot{width:6px;height:6px;background:#17a58d;border-radius:50%}.hero{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:24px}.hero p{color:var(--muted);margin-top:8px;font-size:13px}.eyebrow{color:var(--accent);font-size:10px;font-weight:800;letter-spacing:2px;margin-bottom:8px}.actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:var(--paper);border:1px solid var(--line);color:var(--ink);padding:9px 13px;border-radius:10px;font-weight:600;font-size:12px;white-space:nowrap;text-decoration:none;transition:background .15s}.btn:hover{background:#f1f4fa}.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 4px 10px #5264e81a}.btn.primary:hover{background:#4153d2}.btn.soft{background:var(--accent-soft);color:#4654c5;border-color:#dfe3ff}.btn.danger{color:#bd4053;background:#fff2f4;border-color:#f6d7dd}.btn.small{font-size:11px;padding:6px 10px;border-radius:7px}.btn svg{width:16px;height:16px}.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.panel-head{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--line);gap:10px}.panel-head p{font-size:11px;color:var(--muted);margin-top:3px}.config{padding:14px 18px;display:flex;gap:14px;align-items:flex-end;margin-bottom:18px;flex-wrap:wrap}.field{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--muted)}.field input,.field select{font-size:12px;min-height:36px}.field.wide{flex:1;min-width:180px}.inline-check{display:flex;align-items:center;gap:6px;font-size:12px;padding-bottom:8px;margin-left:auto;white-space:nowrap}.time-hint{font-size:11px;color:var(--muted);margin:-7px 3px 15px}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 338px;gap:18px;align-items:start}.chart-body{padding:17px 18px}.dropzone{display:flex;align-items:center;justify-content:center;gap:12px;padding:13px;border:1px dashed #bac7e2;background:#f9faff;border-radius:12px;margin-bottom:14px;cursor:pointer;transition:.15s}.dropzone strong{font-size:12px}.dropzone span{font-size:11px;color:var(--muted)}.dropzone.drag{background:#e8edff;border-color:var(--accent)}.drop-icon{color:var(--accent);width:26px;height:26px}.pill{display:inline-flex;align-items:center;border-radius:6px;padding:3px 7px;font-size:10px;font-weight:650;white-space:nowrap}.pill.amber{color:#916014;background:#fff4dd}.pill.purple{color:#535fce;background:#eff0ff}.pill.neutral{color:#617087;background:#f0f3f7}.pill.up{color:#bc4051;background:#ffedf0}.pill.down{color:#2965b6;background:#eaf2ff}.pill.mint{color:#087e6e;background:#e5f5ef}.chart-toolbar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;align-items:center}.chart-toolbar .sep{width:1px;height:17px;background:var(--line);margin:0 3px}.chart-stage{position:relative;width:100%;background:#101c2f;border-radius:12px;overflow:auto;min-height:210px;border:1px solid #24344d}.chart-stage canvas{display:block;width:100%;height:auto;touch-action:none;cursor:crosshair}.canvas-wrap{width:100%}.mode-hint{font-size:12px;padding:9px 12px;border-radius:8px;background:#edf0ff;color:#4354bb;margin-bottom:9px;display:none}.mode-hint.visible{display:flex;align-items:center;justify-content:space-between;gap:8px}.mode-hint button{color:inherit;background:transparent;text-decoration:underline}.chart-meta{display:flex;justify-content:space-between;gap:10px;font-size:10px;color:var(--muted);margin-top:9px;flex-wrap:wrap}.chart-foot{margin-top:13px;font-size:11px;color:var(--muted);line-height:1.7}.warning{background:#fff8e9;color:#865b1f;border:1px solid #f6e9c7;padding:10px 12px;border-radius:9px;font-size:11px;margin-top:12px}.notice{background:#f2f5fb;border:1px solid #e5ebf5;color:#596d89;padding:11px 14px;border-radius:10px;font-size:12px}.details-settings{margin-top:14px;border-top:1px solid var(--line);padding-top:11px}.details-settings summary{cursor:pointer;font-size:12px;font-weight:600;color:#5b6e88}.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-top:12px}.color-row{display:flex;align-items:center;gap:7px;font-size:11px}.setting-note{font-size:11px;color:var(--muted);grid-column:1/-1}.check-row{display:flex;align-items:center;gap:6px;font-size:11px}.zoom-row{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted)}.zoom-row input{width:76px;accent-color:var(--accent)}.detail-card{overflow:hidden}.detail-header{background:#f9faff;padding:17px 20px;border-bottom:1px solid var(--line)}.detail-header .kicker{font-size:10px;color:var(--accent);font-weight:700;letter-spacing:1.1px}.detail-title{display:flex;justify-content:space-between;align-items:center;margin-top:5px}.detail-title h2{font-size:22px;letter-spacing:-.7px}.detail-sub{color:var(--muted);font-size:11px;margin-top:5px}.detail-content{padding:17px 20px}.mini-candle{display:flex;align-items:center;gap:13px;background:#f7f9fc;padding:11px;border-radius:12px}.mini-candle svg{width:70px;height:110px;flex-shrink:0}.mini-candle .metrics{flex:1}.metric-line{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted);margin:5px 0}.metric-line b{color:var(--ink);font-size:12px}.bar{height:6px;display:flex;border-radius:5px;overflow:hidden;background:#e9edf4;margin-top:9px}.segment-upper{background:#9aa9bc}.segment-body{background:var(--accent)}.segment-lower{background:#68b9b0}.detail-label{font-size:10px;letter-spacing:.5px;font-weight:700;color:var(--accent);margin:15px 0 6px}.detail-text{font-size:12px;line-height:1.8;color:#43546e}.detail-quote{font-size:12px;font-weight:650;color:#3b4789;background:#f0f2ff;padding:11px 12px;border-radius:9px;margin-top:12px}.detail-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}.detail-tags button{cursor:pointer}.detail-nav{display:flex;gap:6px;margin-top:15px}.detail-nav .btn{flex:1}.detail-footer{display:flex;gap:6px;margin-top:8px}.detail-footer .btn{flex:1}.ohlc-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:12px 0}.ohlc-grid>div{background:#f6f8fc;padding:6px 9px;border-radius:7px;font-size:10px;color:var(--muted)}.ohlc-grid b{display:block;font-variant-numeric:tabular-nums;color:var(--ink);font-size:12px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin:18px 0}.stat{padding:16px 18px;min-height:111px}.stat-label{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.6px}.stat-value{font-size:24px;font-weight:750;line-height:1.4;margin-top:5px;letter-spacing:-.7px}.stat-value small{font-size:12px;letter-spacing:0;font-weight:500;color:var(--muted)}.stat-foot{font-size:10px;color:var(--muted);margin-top:4px}.table-head{padding:17px 20px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.table-tools{display:flex;gap:7px;align-items:center}.table-tools input{width:150px;font-size:11px}.table-tools select{font-size:11px}.table-wrap{max-height:430px;overflow:auto;border-top:1px solid var(--line)}table{width:100%;border-collapse:collapse;min-width:650px;font-size:12px}th{position:sticky;top:0;background:#f8fafd;color:#7b8799;font-size:10px;font-weight:600;text-align:left;padding:10px 14px;z-index:2}td{padding:11px 14px;border-bottom:1px solid #edf0f5;vertical-align:middle}tr[data-index]{cursor:pointer}tr[data-index]:hover td{background:#f9faff}tr.selected td{background:#f0f3ff}tr.selected td:first-child{box-shadow:inset 3px 0 var(--accent)}.num{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11px;color:var(--muted)}.table-pattern{font-weight:600;white-space:nowrap}.table-pattern small{display:block;color:var(--muted);font-size:9px;font-weight:400;margin-top:3px}.ratio-stack{display:flex;gap:10px;font-size:10px;color:var(--muted)}.table-footer{display:flex;justify-content:space-between;padding:12px 20px;font-size:11px;color:var(--muted)}.page[hidden]{display:none}.learn-intro{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;margin-bottom:20px}.learn-banner{padding:25px;background:#e9edff;border:1px solid #dbe2ff}.learn-banner h2{font-size:22px;line-height:1.5}.learn-banner p{font-size:12px;line-height:1.9;color:#526285;margin-top:12px}.learning-steps{display:flex;gap:10px;margin-top:18px}.learning-steps span{background:#fff9;padding:7px 10px;border-radius:7px;font-size:11px;color:#4b5883}.basic-figure{padding:22px;display:flex;gap:20px;align-items:center;justify-content:center}.basic-figure svg{width:140px;height:180px}.basic-figure p{font-size:12px;color:var(--muted);line-height:2}.chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}.chip{padding:8px 13px;font-size:11px;border-radius:25px;background:#fff;color:var(--muted);border:1px solid var(--line)}.chip.active{background:var(--ink);border-color:var(--ink);color:#fff}.lesson-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.lesson-card{padding:17px;text-align:left;position:relative;transition:.15s;cursor:pointer}.lesson-card:hover{transform:translateY(-3px);border-color:#c5cefb;box-shadow:0 10px 24px #243a5c10}.lesson-card .lesson-visual{height:108px;display:flex;align-items:center;justify-content:center;background:#f8fafd;border-radius:10px;margin:12px 0}.lesson-visual svg{width:130px;height:95px}.lesson-card h3{font-size:15px;margin-bottom:4px}.lesson-card p{font-size:11px;line-height:1.7;color:var(--muted)}.lesson-card small{font-size:10px;color:#8b98aa}.lesson-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:12px}.check-mark{font-size:10px;color:var(--mint)}.quiz-layout{max-width:780px;margin:0 auto}.quiz-progress{display:flex;gap:6px;margin:20px 0}.quiz-dot{height:5px;background:#dde3ee;border-radius:6px;flex:1}.quiz-dot.done{background:#6e7bef}.quiz-card{padding:30px}.quiz-card h2{font-size:23px;margin:10px 0 24px}.quiz-figure{background:#f7f9fc;border-radius:14px;text-align:center;padding:15px;margin:18px 0}.quiz-figure svg{height:150px;width:220px}.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}.quiz-option{text-align:left;border:1px solid var(--line);border-radius:10px;background:#fff;padding:15px;font-size:13px}.quiz-option:hover{border-color:#99a5f0;background:#f6f7ff}.quiz-option.correct{border-color:#37aa91;background:#eaf8f3;color:#086450}.quiz-option.wrong{border-color:#de8995;background:#fff0f2;color:#ac3648}.quiz-feedback{padding:15px;border-radius:10px;background:#f2f5fa;font-size:13px;margin-top:18px;min-height:50px}.quiz-end{text-align:center;padding:40px}.quiz-end strong{font-size:52px;color:var(--accent)}.guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.guide-card{padding:25px}.guide-card h2{margin-bottom:15px}.guide-card p,.guide-card li{font-size:12px;line-height:1.9;color:#55677f}.guide-card ol{padding-left:20px}.guide-card code{background:#edf0f6;padding:3px 6px;border-radius:4px;word-break:break-all}.source-list a{display:block;margin:10px 0;font-size:12px}.footer{font-size:10px;color:#8b97a9;margin-top:24px;padding-top:14px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:20px}.modal{border:0;border-radius:20px;padding:0;width:min(650px,94vw);color:var(--ink);box-shadow:0 24px 100px #0e1d4455;max-height:90vh;overflow:auto}.modal::backdrop{background:#0e1d4499;backdrop-filter:blur(4px)}.modal-top{display:flex;justify-content:space-between;align-items:center;padding:20px 25px;border-bottom:1px solid var(--line)}.modal-body{padding:24px 25px}.close{background:#f0f3f9;border-radius:50%;width:30px;height:30px;color:#68788e;font-size:20px;line-height:1}.modal-visual{background:#f6f8fc;border-radius:14px;padding:12px;text-align:center;margin-bottom:20px}.modal-visual svg{height:150px;width:220px}.modal-body .section{margin:18px 0}.modal-body .section h3{font-size:11px;color:var(--accent);margin-bottom:7px}.modal-body p{font-size:13px;color:#4e617d;line-height:1.85}.modal-actions{display:flex;gap:8px;margin-top:23px}.toast{position:fixed;bottom:25px;left:calc(50% + 100px);transform:translate(-50%,15px);background:#17263e;color:#fff;box-shadow:0 8px 24px #17243b33;padding:12px 20px;font-size:12px;border-radius:12px;z-index:100;opacity:0;pointer-events:none;transition:.18s;max-width:90vw}.toast.show{opacity:1;transform:translate(-50%,0)}.sr-only{position:absolute!important;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.busy{opacity:.5;pointer-events:none}.empty{padding:35px 20px;text-align:center;color:var(--muted);font-size:13px}.mobile-brand{display:none}.scroll-instruction{font-size:11px;color:var(--muted)}
+@media(min-width:1700px){.workspace{grid-template-columns:minmax(0,1fr) 385px}.main{padding:32px 44px}.lesson-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(max-width:1230px){.sidebar{width:178px;padding:25px 14px}.brand{gap:8px;padding:0}.brand strong{font-size:13px}.brand small{font-size:8px}.main{margin-left:178px;width:calc(100% - 178px);padding:23px}.workspace{grid-template-columns:minmax(0,1fr) 300px}.lesson-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{align-items:flex-start}.hero h1{font-size:25px}.hero .actions{justify-content:flex-end}.chart-body{padding:13px}.panel-head{padding:15px}.detail-content{padding:15px}.inline-check{margin-left:0}.table-tools input{width:120px}}
+@media(max-width:980px){.sidebar{width:76px;padding:26px 12px}.brand-icon{width:43px;height:43px}.brand>div:last-child,.side-caption,.side-tip,.version,.nav-btn span{display:none}.brand{margin-bottom:35px;justify-content:center}.nav-btn{justify-content:center;padding:15px}.main{margin-left:76px;width:calc(100% - 76px);padding:22px}.workspace{grid-template-columns:minmax(0,1fr) 290px}.topline{margin-bottom:20px}.hero{flex-wrap:wrap}.hero .actions{justify-content:flex-start}.guide-grid{grid-template-columns:1fr}.toast{left:calc(50% + 30px)}}
+@media(max-width:780px){.workspace{grid-template-columns:1fr}.detail-content{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}.detail-content>div:first-child{grid-row:span 2}.detail-quote,.detail-tags,.detail-nav,.detail-footer{grid-column:1/-1}.lesson-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.learn-intro{grid-template-columns:1fr}.stats{gap:10px}.stat{padding:13px}.stat-value{font-size:22px}.config{gap:9px;padding:12px}.table-tools{flex-wrap:wrap}.table-head{padding:15px}.topline{margin-bottom:17px}.main{padding:20px}.chart-stage{min-height:160px}.detail-title h2{font-size:20px}}
+@media(max-width:550px){.sidebar{inset:auto 0 0 0;width:100%;height:65px;flex-direction:row;padding:5px 10px;justify-content:space-around;border-top:1px solid #30405a}.sidebar .brand{display:none}.sidebar nav{display:flex;width:100%;justify-content:space-around}.nav-btn{width:auto;flex:1;flex-direction:column;gap:1px;margin:0;font-size:9px;padding:6px}.nav-btn span{display:block}.nav-btn svg{height:18px;width:18px}.main{margin:0;width:100%;padding:17px 14px 85px}.mobile-brand{display:inline;font-weight:800;letter-spacing:1px;color:var(--ink)}.crumb{font-size:10px}.crumb .desktop-crumb{display:none}.status{font-size:9px;padding:4px 7px}.hero{gap:14px;margin-bottom:17px}.hero h1{font-size:25px}.hero p{font-size:12px}.hero .actions .btn{font-size:11px}.config .field{flex:1;min-width:110px}.config .wide{flex-basis:100%}.inline-check{font-size:11px;padding:2px 0}.time-hint{font-size:10px}.workspace{gap:13px}.chart-body{padding:11px}.panel-head{padding:13px}.panel-head h2{font-size:15px}.panel-head .pill{font-size:9px}.dropzone{gap:8px;padding:11px}.dropzone strong{font-size:11px}.dropzone span{display:block;font-size:10px}.chart-toolbar .btn{font-size:10px;padding:6px 7px}.chart-toolbar .sep{display:none}.zoom-row{margin-left:0}.chart-foot{font-size:10px}.stats{gap:7px;margin:13px 0;grid-template-columns:repeat(3,minmax(0,1fr))}.stat{padding:11px 10px;min-height:100px;border-radius:13px}.stat-label{font-size:9px;letter-spacing:0}.stat-value{font-size:19px}.stat-value small{font-size:9px}.stat-foot{font-size:9px}.detail-content{display:block;padding:15px}.detail-header{padding:15px}.mini-candle svg{width:72px;height:96px}.detail-nav{margin-top:15px}.table-tools{width:100%}.table-tools input{flex:1}.table-tools select{width:120px}.table-footer{padding:10px 13px;font-size:10px}.lesson-grid{gap:10px}.lesson-card{padding:13px}.lesson-card h3{font-size:14px}.lesson-card p{font-size:10px}.lesson-card .lesson-visual{height:86px}.lesson-visual svg{height:78px}.lesson-bottom{flex-wrap:wrap;gap:4px}.learning-steps{flex-wrap:wrap;gap:6px}.learning-steps span{font-size:10px}.learn-banner{padding:20px}.learn-banner h2{font-size:19px}.basic-figure{padding:15px;gap:5px}.basic-figure p{font-size:11px}.quiz-card{padding:22px 17px}.quiz-card h2{font-size:19px}.quiz-options{grid-template-columns:1fr}.quiz-option{font-size:12px;padding:12px}.guide-card{padding:20px}.footer{flex-direction:column;gap:5px}.toast{left:50%;bottom:80px;width:max-content}.modal-body{padding:20px}.modal-top{padding:17px 20px}.settings-grid{grid-template-columns:1fr}.setting-note{grid-column:auto}.chart-stage{min-height:120px}.btn{padding:9px 11px}.hero .eyebrow{font-size:9px}}
+@media print{.sidebar,.hero .actions,.chart-toolbar,.dropzone,.config,.topline,.details-settings,.table-tools,.detail-footer,.detail-nav,.footer{display:none}.main{margin:0;width:100%;padding:0}.workspace{grid-template-columns:1fr}.chart-stage{border:0}.table-wrap{max-height:none}.panel{box-shadow:none;break-inside:avoid}.page[hidden]{display:none}.stats{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+ <div class="brand"><div class="brand-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 3v18M12 1v22M18 4v17" stroke="white" stroke-width="1.3"/><path d="M3.5 8h5v9h-5zM9.5 5h5v7h-5zM15.5 10h5v7h-5z" fill="white"/></svg></div><div><strong>CANDLE LAB</strong><small>CHART STUDY STUDIO</small></div></div>
+ <div class="side-caption">YOUR WORKSPACE</div>
+ <nav aria-label="메인 메뉴">
+ <button class="nav-btn active" data-page="analyze" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4v16h17M8 6v10m-2-7h4v4H6zm10-7v12m-2-9h4v5h-4z"/></svg><span>차트 분석</span></button>
+ <button class="nav-btn" data-page="learn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v15M3 4c4-1 6 0 9 2 3-2 5-3 9-2v15c-4-1-6 0-9 2-3-2-5-3-9-2z"/></svg><span>캔들 사전</span></button>
+ <button class="nav-btn" data-page="quiz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m12 2 8 4v6c0 5-8 10-8 10S4 17 4 12V6zM8 12l3 3 5-6"/></svg><span>연습 퀴즈</span></button>
+ <button class="nav-btn" data-page="guide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v1"/></svg><span>사용법 · 기준</span></button>
+ </nav>
+ <div class="side-tip"><strong>가격이 아닌, 읽는 힘을.</strong>캔들은 지나온 움직임의 기록입니다. 다음 가격을 보장하는 신호가 아닙니다.</div><div class="version">OFFLINE EDITION / V1.0</div>
+</aside>
+<main class="main">
+ <div class="topline"><div class="crumb"><span class="mobile-brand">CANDLE LAB</span><span class="desktop-crumb">나의 차트 공부방 &nbsp;/&nbsp; <span id="breadcrumb">차트 분석</span></span></div><span class="status"><i class="dot"></i> 이미지는 내 기기에서만 처리</span></div>
+ <section class="page" id="page-analyze">
+  <div class="hero"><div><div class="eyebrow">SEE THE CANDLE. READ THE CONTEXT.</div><h1>차트는 읽고, 패턴은 익히고.</h1><p>캡처 속 캔들을 하나씩 짚어 보세요. 모양, 맥락, 다음 확인까지.</p></div><div class="actions"><button class="btn" id="demoBtn">가상 예제 보기</button><button class="btn primary" id="uploadBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6"/></svg>캡처 불러오기</button></div></div>
+  <div class="panel config">
+   <label class="field wide">차트 이름 <input type="text" id="chartName" maxlength="80" value="연습용 가상 차트" placeholder="예: 삼성전자 / 날짜는 자동 판독하지 않음"></label>
+   <label class="field">차트 색상 규칙 <select id="palette"><option value="kr">양봉 빨강 / 음봉 파랑</option><option value="us">양봉 초록 / 음봉 빨강</option><option value="custom">직접 선택한 색상</option></select></label>
+   <label class="field">캔들 1개의 기간 <select id="timeframe"><option value="1분봉">1분봉</option><option value="5분봉">5분봉</option><option value="15분봉">15분봉</option><option value="60분봉">60분봉</option><option value="일봉" selected>일봉</option><option value="주봉">주봉</option><option value="월봉">월봉</option></select></label>
+   <label class="field">관심 투자 기간 <select id="horizon"><option value="intraday">당일 매매</option><option value="days">며칠 ~ 몇 주</option><option value="months" selected>몇 주 ~ 몇 달</option><option value="years">1년 이상</option></select></label>
+   <label class="inline-check"><input id="inProgress" type="checkbox" checked>마지막 봉은 진행 중</label>
+  </div>
+  <div class="time-hint" id="timeHint"></div>
+  <div class="workspace">
+   <section class="panel chart-card">
+    <div class="panel-head"><div><h2>01. 캡처에서 읽기</h2><p>번호를 누르면 그 캔들의 해설이 열립니다.</p></div><span class="pill amber" id="sourceBadge">가상 예제 · 실제 시세 아님</span></div>
+    <div class="chart-body">
+     <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="캡처 이미지 선택 또는 드래그"><svg class="drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="m4 17 5-5 4 4 4-7 4 4"/><circle cx="9" cy="8" r="1"/></svg><div><strong>이미지를 놓거나 클릭하세요</strong><span> &nbsp;PNG · JPG · WebP &nbsp;|&nbsp; Ctrl+V로 붙여넣기</span></div></div>
+     <div class="chart-toolbar">
+      <button class="btn small" id="cropBtn">① 영역 지정</button><button class="btn small primary" id="detectBtn">② 캔들 인식</button><span class="sep"></span><button class="btn small" id="addBtn">+ 누락 봉 추가</button><button class="btn small" id="undoBtn" disabled>되돌리기</button>
+      <label class="zoom-row">확대 <input id="zoom" type="range" min="100" max="250" step="25" value="100" aria-label="차트 확대"></label>
+     </div>
+     <div id="modeHint" class="mode-hint" role="status"><span></span><button id="cancelMode">취소</button></div>
+     <div class="chart-stage" id="chartStage"><div class="canvas-wrap" id="canvasWrap"><canvas id="chart" width="1200" height="560" aria-label="캔들 번호와 영역을 표시한 차트. 아래 표에서도 각 캔들을 선택할 수 있습니다."></canvas></div></div>
+     <div class="chart-meta"><span id="imageMeta">가상 연습 데이터</span><label class="check-row"><input id="showNumbers" type="checkbox" checked>번호 표시</label></div>
+     <div class="chart-foot">가격 봉 영역만 선택하세요. <b>거래량·가격축·제목은 제외</b>해야 합니다. 번호와 실제 봉이 일치하는지 먼저 확인하고, 누락·오인식은 직접 보정하세요.</div>
+     <div id="recognitionWarning" class="warning" hidden></div>
+     <details class="details-settings"><summary>인식 색상 · 가격 눈금 · 데이터 설정</summary>
+      <div class="settings-grid">
+       
+       <label class="field">가격축 <select id="axis"><option value="linear">일반(선형) 가격축</option><option value="log">로그 가격축 · 눈금 지정 필요</option></select></label>
+       <div class="color-row"><label for="upColor">양봉</label><input type="color" id="upColor" value="#e54d60"><button class="btn small" id="pickUp">차트에서 찍기</button></div>
+       <div class="color-row"><label for="downColor">음봉</label><input type="color" id="downColor" value="#3c82f6"><button class="btn small" id="pickDown">차트에서 찍기</button></div>
+       <label class="field">색상 허용 폭 <select id="tolerance"><option value="15">좁게 · 다른 선 배제</option><option value="22" selected>보통</option><option value="30">넓게 · 색상 차이 허용</option></select></label>
+       <label class="field">보정할 캔들의 방향 <select id="manualDirection"><option value="1">양봉 (시가 &lt; 종가)</option><option value="-1">음봉 (시가 &gt; 종가)</option></select></label>
+       <div class="actions"><button class="btn small" id="calibrateBtn">가격 눈금 2개 지정</button><button class="btn small" id="resetCalBtn">눈금 해제</button></div>
+       <div class="actions"><button class="btn small" id="csvBtn">OHLC CSV 불러오기</button><button class="btn small" id="csvTemplateBtn">CSV 예제 저장</button></div>
+       <div class="setting-note" id="calInfo">가격 눈금 미지정: 가격·날짜를 추측하지 않고 모양만 분석합니다.</div>
+       <div class="setting-note">자동 인식은 두 가지 색의 일반 채움형 캔들에 맞춰져 있습니다. 흑백·중공형·하이킨아시·선차트·렌코·극도로 작은 봉은 지원하지 않거나 잘못 읽을 수 있습니다. 보조지표는 숨기고 캡처하는 것이 좋습니다.</div>
+      </div>
+     </details>
+    </div>
+   </section>
+   <section class="panel detail-card" id="detailCard" aria-live="polite"></section>
+  </div>
+  <div class="stats" id="stats"></div>
+  <section class="panel">
+   <div class="table-head"><div><h2>02. 인식된 모든 캔들</h2><p class="scroll-instruction">왼쪽부터 시간순 · 특별한 패턴이 없는 봉도 빠짐없이 표시</p></div><div class="table-tools"><input type="text" id="search" placeholder="번호 또는 패턴 검색" aria-label="캔들 검색"><select id="filter" aria-label="캔들 필터"><option value="all">전체 보기</option><option value="bullish">상승 전환 후보</option><option value="bearish">하락 전환 후보</option><option value="neutral">중립 형태</option><option value="multi">2·3봉 조합</option><option value="review">재확인 필요</option></select><button class="btn small" id="saveBtn">결과 저장 ↗</button></div></div>
+   <div class="table-wrap"><table><thead><tr><th>번호 · 기간</th><th>형태 / 조합 후보</th><th>앞선 5봉</th><th>몸통 · 위 · 아래</th><th>입력 상태</th></tr></thead><tbody id="candleTable"></tbody></table></div>
+   <div class="table-footer"><span id="tableCount"></span><span>승률·매수 점수는 계산하지 않습니다.</span></div>
+  </section>
+ </section>
+ <section class="page" id="page-learn" hidden>
+  <div class="hero"><div><div class="eyebrow">PATTERN LIBRARY</div><h1>모양보다 중요한 건, 맥락.</h1><p>24가지 기본 형태와 조합. 그림을 눌러 조건과 주의점을 익히세요.</p></div><span class="pill mint" id="learnProgress">학습 0 / 24</span></div>
+  <div class="learn-intro"><div class="panel learn-banner"><h2>몸통은 시작과 끝,<br>꼬리는 그동안의 범위.</h2><p>같은 아래꼬리도 하락 뒤에는 망치형, 상승 뒤에는 교수형 후보입니다. 모양 하나에 결론을 맡기지 마세요.</p><div class="learning-steps"><span>01 색·방향</span><span>02 몸통·꼬리</span><span>03 앞선 추세</span><span>04 후속 확인</span></div></div><div class="panel basic-figure" id="basicFigure"></div></div>
+  <div class="chips" id="lessonFilters"><button class="chip active" data-group="all">전체 24</button><button class="chip" data-group="basic">기본 6</button><button class="chip" data-group="neutral">중립 6</button><button class="chip" data-group="bullish">상승 전환 후보 6</button><button class="chip" data-group="bearish">하락 전환 후보 6</button></div>
+  <div class="lesson-grid" id="lessonGrid"></div>
+ </section>
+ <section class="page" id="page-quiz" hidden>
+  <div class="hero"><div><div class="eyebrow">LEARN BY DOING</div><h1>한 번 보고, 직접 맞혀 보기.</h1><p>이름 외우기부터 오해 바로잡기까지. 틀려도 해설로 익히면 됩니다.</p></div><button class="btn" id="restartQuiz">처음부터 풀기</button></div><div class="quiz-layout"><div class="quiz-progress" id="quizProgress"></div><div class="panel quiz-card" id="quizCard"></div></div>
+ </section>
+ <section class="page" id="page-guide" hidden>
+  <div class="hero"><div><div class="eyebrow">METHOD & LIMITS</div><h1>무엇을 읽고, 무엇은 모르는지.</h1><p>분석 결과를 이해하려면 입력과 판독 기준도 함께 확인하세요.</p></div></div>
+  <div class="guide-grid">
+   <article class="panel guide-card"><h2>캡처 분석, 이렇게 사용하세요</h2><ol><li>일반 채움형 캔들 차트를 확대합니다. 이동평균선·거래량·보조지표를 숨기면 더 깔끔하게 읽힙니다.</li><li>PNG·JPG·WebP를 불러오거나 Ctrl+V로 붙여넣습니다. 앱은 파일을 서버로 보내지 않습니다.</li><li>실제 캡처의 양봉·음봉 색상, 기간, 가격축을 직접 선택합니다. 설정 변경은 원본 봉을 다른 기간으로 재집계하지 않습니다.</li><li>‘영역 지정’을 누르고 가격 봉 영역만 드래그한 뒤 ‘캔들 인식’을 누릅니다.</li><li>번호·개수와 실제 봉을 대조합니다. 오인식 삭제, 누락 봉 추가, 고가·몸통 위·몸통 아래·저가 네 번 클릭으로 직접 고칠 수 있습니다.</li><li>분석 표에서 캔들을 선택하고 사전·퀴즈로 이어서 학습합니다.</li></ol></article>
+   <article class="panel guide-card"><h2>‘모든 캔들’의 정확한 범위</h2><p>선택 영역에서 <b>인식된 모든 후보</b>를 표로 분석합니다. 인식된 수가 실제 봉 수와 같다는 보장은 없습니다. 같은 색 이동평균선, 작은 몸통, 잘린 꼬리, 중공형, 저해상도에서 누락·중복이 생길 수 있습니다.</p><p style="margin-top:12px">‘재확인’은 형태가 모호하다는 뜻입니다. ‘형태 추정’도 검증된 정확도를 뜻하지 않습니다. 모호한 봉은 특정 패턴·조합 판독을 보류합니다. 간격이 크게 벌어진 곳의 연속 패턴도 보류합니다.</p><p style="margin-top:12px">정확한 수치가 필요하면 증권 프로그램에서 내보낸 <b>OHLC CSV</b>를 사용하세요. CSV 값도 사용자가 제공한 값이며 외부 시세로 검증하지 않습니다.</p></article>
+   <article class="panel guide-card"><h2>판독 규칙은 공개되어 있습니다</h2><p>각 사전에 실제 적용한 크기·비율 조건을 표시했습니다. 이 값들은 교육용 구현 기준이며 통일된 국제 표준이나 수익률 검증 결과가 아닙니다.</p><p style="margin-top:12px"><b>앞선 추세:</b> 패턴 시작 직전 5개 완성 봉의 종가를 직선으로 요약합니다. 그 직선의 변화폭이 같은 구간의 평균 고저 범위보다 크면 상승, 그 반대면 하락, 나머지는 횡보로 분류합니다. 5봉 미만 또는 인식·연속성 문제가 있으면 판단을 보류합니다.</p><p style="margin-top:12px"><b>후속 확인:</b> 패턴 다음의 완성 봉 종가가 해당 마지막 봉의 고가를 넘었는지 또는 저가를 밑돌았는지만 표시합니다. 당시 알 수 없던 미래를 과거 판단 근거로 쓰지 않으며, 역사적 관찰이라고 명시합니다.</p><p style="margin-top:12px"><b>장대형:</b> 직전 최대 10봉(최소 5봉)과 몸통·고저 범위를 비교합니다. 앞선 자료가 없으면 이름을 억지로 붙이지 않습니다.</p></article>
+   <article class="panel guide-card"><h2>시간 단위 · 진행 중인 봉</h2><p>일봉의 망치형과 5분봉의 망치형은 형태 조건은 같아도 담고 있는 기간이 다릅니다. ‘주기’는 해설용 설정입니다. 일봉 캡처를 주봉으로 바꾸는 변환 기능은 아닙니다.</p><p style="margin-top:12px">현재 진행 중인 마지막 봉은 모양이 바뀔 수 있습니다. ‘마지막 봉은 진행 중’을 켜면 잠정 표시하고 완성 봉 통계에서 제외합니다. 과거 캡처나 마감 차트라면 해제하세요.</p><p style="margin-top:12px">같은 OHLC라도 장중에 고가와 저가 중 어느 쪽을 먼저 기록했는지는 알 수 없습니다. 위·아래꼬리만으로 주문 흐름이나 투자자 신원을 알아낼 수도 없습니다.</p></article>
+   <article class="panel guide-card"><h2>가격·날짜·거래량 처리</h2><p>이미지 속 숫자를 OCR로 읽거나 실제 시세를 조회하지 않습니다. 기본값은 <b>가격 미지정·날짜 미판독</b>입니다. 두 눈금의 가격과 위치를 직접 지정하면 가격을 근사 계산하며 ‘≈’를 붙입니다.</p><p style="margin-top:12px">로그 가격축은 눈금을 지정하기 전까지 패턴 분석을 보류합니다. 선형 화면 높이를 실제 가격 차이로 오인하지 않도록 하기 위해서입니다. 화면의 거래량·뉴스·외국인 수급·이동평균선은 분석하지 않습니다. CSV에 거래량이 있으면 제공 수치와 직전 최대 10봉 평균의 비교만 표시합니다.</p><p style="margin-top:12px">CSV 헤더: <code>date,open,high,low,close,volume</code>. 날짜와 거래량은 선택 사항입니다. 오래된 봉부터 입력하며 2,000봉 이내를 지원합니다. CSV를 불러오면 캡처 결과와 합치지 않고 별도 차트로 교체합니다.</p></article>
+   <article class="panel guide-card"><h2>저장 · 개인정보 · 참고 자료</h2><p>로그인·API 키·인터넷 연결이 필요 없습니다. 이미지와 분석은 현재 브라우저 메모리에만 있습니다. 새로고침·창 닫기를 하면 작업이 사라지므로 ‘결과 저장’에서 프로젝트 JSON을 저장하세요. 사전의 학습 완료 체크만 이 기기 브라우저에 저장될 수 있습니다.</p><p style="margin-top:12px">프로젝트 파일에는 이미지가 포함됩니다. 공유할 때 계좌번호 등 개인정보가 캡처에 남아 있지 않은지 확인하세요. 아래 참고 자료 링크는 클릭할 때만 외부 사이트로 연결됩니다.</p><div class="source-list"><a href="https://www.cmegroup.com/education/courses/technical-analysis/chart-types-candlestick-line-bar" target="_blank" rel="noopener noreferrer">CME Group · 캔들의 구성과 시간 단위 ↗</a><a href="https://chartschool.stockcharts.com/table-of-contents/chart-analysis/candlestick-charts/candlestick-bullish-reversal-patterns" target="_blank" rel="noopener noreferrer">StockCharts · 상승 전환 형태와 확인 ↗</a><a href="https://chartschool.stockcharts.com/table-of-contents/chart-analysis/candlestick-charts/candlestick-bearish-reversal-patterns" target="_blank" rel="noopener noreferrer">StockCharts · 하락 전환 형태와 확인 ↗</a><a href="https://www.schwab.com/learn/story/how-to-read-stock-charts-and-trading-patterns" target="_blank" rel="noopener noreferrer">Charles Schwab · 차트의 맥락과 한계 ↗</a></div></article>
+  </div>
+ </section>
+ <footer class="footer"><span>학습·관찰용 도구입니다. 매수·매도 추천, 승률 예측, 실제 시세 제공 서비스가 아닙니다.</span><span>CANDLE LAB · 로컬 실행형</span></footer>
+</main>
+</div>
+<dialog class="modal" id="lessonModal" aria-labelledby="lessonModalTitle"><div class="modal-top"><h2 id="lessonModalTitle"></h2><button class="close" data-close="lessonModal" aria-label="닫기">×</button></div><div class="modal-body" id="lessonModalBody"></div></dialog>
+<dialog class="modal" id="saveModal" aria-labelledby="saveTitle"><div class="modal-top"><h2 id="saveTitle">작업과 분석 저장</h2><button class="close" data-close="saveModal" aria-label="닫기">×</button></div><div class="modal-body"><p>결과는 현재 화면에 보이는 필터와 관계없이 전체 캔들을 포함합니다.</p><div class="section"><h3>분석 결과</h3><div class="actions"><button class="btn primary" id="exportCSV">전체 분석 CSV</button><button class="btn" id="exportPNG">번호 표시 PNG</button><button class="btn" id="exportReport">해설 TXT</button></div></div><div class="section"><h3>작업 이어 하기</h3><p>이미지·영역·수정한 봉·설정을 JSON 파일 하나로 저장합니다. 캡처에 포함된 개인정보도 함께 저장됩니다.</p><div class="actions" style="margin-top:12px"><button class="btn" id="exportProject">프로젝트 저장</button><button class="btn" id="importProjectBtn">프로젝트 불러오기</button></div></div></div></dialog>
+<dialog class="modal" id="calModal" aria-labelledby="calTitle"><div class="modal-top"><h2 id="calTitle">가격 눈금 두 개 지정</h2><button class="close" data-close="calModal" aria-label="닫기">×</button></div><div class="modal-body"><p>차트의 <b>높은 가격 눈금</b>과 <b>낮은 가격 눈금</b>을 입력하세요. 다음 단계에서 차트의 해당 가로선 위치를 위쪽, 아래쪽 순으로 클릭합니다. 캔들 가격은 근사치로만 표시됩니다.</p><div class="settings-grid"><label class="field">위쪽 눈금 가격 <input id="calTop" type="number" min="0.000001" step="any" placeholder="예: 80000"></label><label class="field">아래쪽 눈금 가격 <input id="calBottom" type="number" min="0.000001" step="any" placeholder="예: 60000"></label></div><p style="margin-top:12px">설정한 가격축: <b id="calAxisName">일반(선형)</b></p><div class="modal-actions"><button class="btn primary" id="startCal">두 위치 찍기 시작</button></div></div></dialog>
+<div class="toast" id="toast" role="status"></div>
+<input type="file" id="imageInput" accept="image/png,image/jpeg,image/webp,image/bmp" hidden><input type="file" id="csvInput" accept=".csv,text/csv" hidden><input type="file" id="projectInput" accept=".json,application/json" hidden>
+<script>/* Candle Lab core. No network, no third-party dependencies.
+ * All classification cutoffs are explicit educational heuristics, NOT tested trading signals.
+ * Screenshot measurements are estimates. Price-axis calibration is optional; dates are never inferred.
+ */
+(function(root){
+'use strict';
+const median=a=>{if(!a.length)return 0;let s=a.slice().sort((x,y)=>x-y),n=s.length;return n%2?s[n>>1]:(s[n/2-1]+s[n/2])/2;};
+const mean=a=>a.length?a.reduce((s,x)=>s+x,0)/a.length:0;
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const ratios=c=>{const range=Math.max(0,c.h-c.l),body=Math.abs(c.c-c.o);return {range,body,upper:Math.max(0,c.h-Math.max(c.o,c.c)),lower:Math.max(0,Math.min(c.o,c.c)-c.l),br:range?body/range:0,dir:c.c>c.o?1:c.c<c.o?-1:0};};
+function trend(cs,end,n=5){
+ const a=cs.slice(Math.max(0,end-n),end);
+ if(a.length<n||a.some(c=>c.partial||c.quality==='low')||a.slice(1).some(c=>c.gapBefore))return 'unknown';
+ const m=(a.length-1)/2, ym=mean(a.map(c=>c.c));let num=0,den=0;
+ a.forEach((c,i)=>{num+=(i-m)*(c.c-ym);den+=(i-m)**2;});
+ const unit=mean(a.map(c=>c.h-c.l));if(!unit||!den)return 'flat';
+ const change=(num/den)*(a.length-1)/unit;
+ return change>1?'up':change< -1?'down':'flat';
+}
+const LESSONS=[
+ {id:'bull',name:'기본 양봉',group:'basic',bars:1,tag:'시가보다 종가가 높음',story:'시작보다 높은 가격에서 끝났습니다. 전날보다 올랐다는 뜻과는 다릅니다.',rule:'종가 > 시가. 다른 특별한 모양 조건에 해당하지 않는 경우의 기본 분류입니다.',remember:'양봉 = 출발점보다 위에서 종료',watch:'전일 종가, 이전 추세, 마감 여부를 따로 확인하세요.',shape:[[40,82,23,68]]},
+ {id:'bear',name:'기본 음봉',group:'basic',bars:1,tag:'시가보다 종가가 낮음',story:'시작보다 낮은 가격에서 끝났습니다. 전날보다 오른 날에도 음봉이 나올 수 있습니다.',rule:'종가 < 시가. 다른 특별한 모양 조건에 해당하지 않는 경우의 기본 분류입니다.',remember:'음봉 = 출발점보다 아래에서 종료',watch:'갭 상승 후 음봉인지, 실제 전일 대비 하락인지 구분하세요.',shape:[[68,82,23,40]]},
+ {id:'long_bull',name:'장대양봉',group:'basic',bars:1,tag:'최근보다 긴 상승 몸통',story:'시가에서 종가까지 위로 이동한 폭이 최근 봉보다 큽니다. 그 힘이 다음 봉에도 이어지는지는 별개입니다.',rule:'몸통/전체 범위 ≥ 65%, 몸통 ≥ 직전 10봉(최소 5봉) 몸통 중앙값의 1.6배, 몸통 ≥ 직전 전체 범위 중앙값의 0.5배.',remember:'길게 밀어 올린 몸통',watch:'높이 오른 뒤의 장대양봉은 추격매수의 근거가 되지 않습니다.',shape:[[20,87,15,82]]},
+ {id:'long_bear',name:'장대음봉',group:'basic',bars:1,tag:'최근보다 긴 하락 몸통',story:'시가에서 종가까지 아래로 이동한 폭이 최근 봉보다 큽니다. 다음 봉의 반등 여부는 알 수 없습니다.',rule:'장대양봉과 같은 크기 조건이며 종가 < 시가입니다.',remember:'길게 밀어 내린 몸통',watch:'실적 변화인지 일시적 변동인지 캔들만으로 구분할 수 없습니다.',shape:[[82,87,15,20]]},
+ {id:'maru_bull',name:'민머리 양봉',group:'basic',bars:1,tag:'꼬리가 거의 없는 양봉',story:'시작이 저가에, 마감이 고가에 가깝습니다. 장중 경로 전체가 일직선이었다는 뜻은 아닙니다.',rule:'양봉이며 몸통 비율 ≥ 90%, 위·아래꼬리가 각각 전체 범위의 5% 이하인 근사형입니다.',remember:'꼬리는 짧고 몸통은 꽉',watch:'민머리형 하나만으로 다음 봉의 상승을 예측하지 않습니다.',shape:[[18,82,18,82]]},
+ {id:'maru_bear',name:'민머리 음봉',group:'basic',bars:1,tag:'꼬리가 거의 없는 음봉',story:'시작이 고가에, 마감이 저가에 가깝습니다. 끝까지 낮은 가격에 머물렀던 결과입니다.',rule:'음봉이며 몸통 비율 ≥ 90%, 위·아래꼬리가 각각 전체 범위의 5% 이하인 근사형입니다.',remember:'높게 시작, 낮게 종료',watch:'가격이 낮아졌다는 사실과 저평가라는 판단은 다릅니다.',shape:[[82,82,18,18]]},
+ {id:'doji',name:'도지형',group:'neutral',bars:1,tag:'시가와 종가가 비슷함',story:'기간 중 움직임이 있었지만 출발점 근처에서 끝났습니다. 어느 방향으로 갈지는 이 모양만으로 정해지지 않습니다.',rule:'몸통/전체 범위 ≤ 10%. 잠자리·비석 조건에 해당하면 그 이름을 우선 표시합니다.',remember:'갔다가 출발점 근처',watch:'고가와 저가의 순서나 매수·매도 주문량이 같았는지는 알 수 없습니다.',shape:[[50,85,15,51]]},
+ {id:'dragonfly',name:'잠자리 도지',group:'neutral',bars:1,tag:'긴 아래꼬리 + 작은 몸통',story:'한때 낮은 가격에서 거래됐지만 시가와 비슷한 위쪽 가격에서 마감했습니다.',rule:'도지 조건 + 아래꼬리 비율 ≥ 65% + 위꼬리 비율 ≤ 10%.',remember:'아래로 길게 다녀온 도지',watch:'낮은 가격을 회복한 흔적이지 반등을 보장하는 약속은 아닙니다.',shape:[[78,82,12,79]]},
+ {id:'gravestone',name:'비석 도지',group:'neutral',bars:1,tag:'긴 위꼬리 + 작은 몸통',story:'한때 높게 거래됐지만 출발점 근처의 낮은 가격에서 마감했습니다.',rule:'도지 조건 + 위꼬리 비율 ≥ 65% + 아래꼬리 비율 ≤ 10%.',remember:'위로 길게 다녀온 도지',watch:'고점 부근의 반복 여부와 다음 봉의 마감을 확인하세요.',shape:[[22,87,18,21]]},
+ {id:'spinning',name:'팽이형',group:'neutral',bars:1,tag:'작은 몸통 + 양쪽 꼬리',story:'시가와 종가의 차이는 작지만 양쪽으로 거래된 범위가 있습니다.',rule:'몸통 비율 > 10% 및 ≤ 30%, 위·아래꼬리 비율이 각각 ≥ 20%.',remember:'양쪽으로 흔들린 팽이',watch:'위아래 꼬리만으로 어느 쪽이 먼저 움직였는지는 모릅니다.',shape:[[44,87,13,58]]},
+ {id:'lower',name:'아래꼬리형',group:'neutral',bars:1,tag:'맥락이 아직 불분명함',story:'아래로 내려갔다가 상당 부분 회복한 형태입니다. 앞선 추세가 불분명하면 망치형이나 교수형으로 단정하지 않습니다.',rule:'도지 제외, 몸통 비율 ≤ 35%, 아래꼬리 ≥ 몸통의 2배, 위꼬리 ≤ max(몸통×0.6, 전체×0.1).',remember:'모양은 같아도 위치가 다르다',watch:'앞선 하락이면 망치형 후보, 상승이면 교수형 후보로 이름이 바뀝니다.',shape:[[65,83,12,79]]},
+ {id:'upper',name:'위꼬리형',group:'neutral',bars:1,tag:'맥락이 아직 불분명함',story:'위로 올라갔다가 상당 부분 밀린 형태입니다. 앞선 추세가 불분명하면 역망치형이나 유성형으로 단정하지 않습니다.',rule:'도지 제외, 몸통 비율 ≤ 35%, 위꼬리 ≥ 몸통의 2배, 아래꼬리 ≤ max(몸통×0.6, 전체×0.1).',remember:'위에서 밀린 흔적',watch:'앞선 하락이면 역망치형 후보, 상승이면 유성형 후보입니다.',shape:[[21,88,17,35]]},
+ {id:'hammer',name:'망치형',group:'bullish',bars:1,tag:'하락 후 긴 아래꼬리',story:'내려오던 흐름에서 낮은 가격을 되돌린 모습입니다. 하락이 끝났다고 확정하는 신호는 아닙니다.',rule:'아래꼬리형 조건 + 해당 봉 이전 5봉의 종가 추세가 하락.',remember:'내려오다 바닥을 두드린 망치',watch:'다음 봉의 종가가 이 봉의 고가를 넘는지, 저가를 다시 깨는지 확인하세요.',shape:[[64,84,12,79]],context:'하락 후'},
+ {id:'hanging',name:'교수형',group:'bearish',bars:1,tag:'상승 후 긴 아래꼬리',story:'올라오던 흐름에서 한때 크게 낮아졌다가 회복한 모습입니다. 상승 중 흔들림을 경계하는 형태입니다.',rule:'아래꼬리형 조건 + 해당 봉 이전 5봉의 종가 추세가 상승.',remember:'망치와 같은 몸, 다른 자리',watch:'아래꼬리만 보고 항상 상승 신호로 해석하지 마세요.',shape:[[79,84,12,64]],context:'상승 후'},
+ {id:'inverted',name:'역망치형',group:'bullish',bars:1,tag:'하락 후 긴 위꼬리',story:'내려오던 흐름에서 위쪽 가격을 시도했지만 일부 밀렸습니다. 이후 회복 확인이 특히 중요합니다.',rule:'위꼬리형 조건 + 해당 봉 이전 5봉의 종가 추세가 하락.',remember:'내리막에서 위를 시험',watch:'위꼬리가 길다고 곧바로 하락 지속 또는 상승 전환으로 단정하지 않습니다.',shape:[[21,88,17,35]],context:'하락 후'},
+ {id:'shooting',name:'유성형',group:'bearish',bars:1,tag:'상승 후 긴 위꼬리',story:'올라오던 흐름에서 더 높은 가격을 시도했다가 밀렸습니다. 상승 동력이 약해지는지 살펴보는 모양입니다.',rule:'위꼬리형 조건 + 해당 봉 이전 5봉의 종가 추세가 상승. 이 앱에서는 갭을 필수 조건으로 두지 않습니다.',remember:'높이 솟았다가 내려온 별',watch:'다음 봉의 종가가 저가 아래로 내려가는지 확인하세요.',shape:[[35,88,17,21]],context:'상승 후'},
+ {id:'engulf_bull',name:'상승 장악형',group:'bullish',bars:2,tag:'음봉 몸통을 감싼 양봉',story:'앞선 음봉의 시가·종가 범위를 다음 양봉의 몸통이 감쌉니다. 꼬리까지 감쌀 필요는 없습니다.',rule:'앞선 하락 + 음봉→양봉 + 뒤 몸통이 앞 몸통 전체를 포함하고 더 큼. 앞 몸통 비율 > 10%, 뒤 몸통 비율 ≥ 50%.',remember:'빨간 몸통이 파란 몸통을 포옹',watch:'앞선 하락 추세와 두 봉의 연속성을 확인해야 합니다.',shape:[[64,72,30,40],[34,85,25,76]],context:'하락 후'},
+ {id:'engulf_bear',name:'하락 장악형',group:'bearish',bars:2,tag:'양봉 몸통을 감싼 음봉',story:'앞선 양봉의 시가·종가 범위를 다음 음봉의 몸통이 감쌉니다.',rule:'앞선 상승 + 양봉→음봉 + 뒤 몸통이 앞 몸통 전체를 포함하고 더 큼. 앞 몸통 비율 > 10%, 뒤 몸통 비율 ≥ 50%.',remember:'파란 몸통이 빨간 몸통을 포옹',watch:'가격 갭과 몸통 경계를 혼동하지 않도록 확인하세요.',shape:[[40,72,30,64],[76,85,25,34]],context:'상승 후'},
+ {id:'harami_bull',name:'상승 잉태형',group:'bullish',bars:2,tag:'큰 음봉 안의 작은 양봉',story:'큰 음봉 다음의 작은 양봉 몸통이 앞 몸통 안에 들어옵니다. 하락 속도가 줄었는지 살피는 형태입니다.',rule:'앞선 하락 + 긴 음봉 다음 양봉의 몸통이 안에 포함. 뒤 몸통 ≤ 앞 몸통의 50%, 앞 몸통 비율 ≥ 55%, 앞 몸통 ≥ 이전 몸통 중앙값×1.3.',remember:'큰 몸통 안에 작은 몸통',watch:'작은 양봉 하나만으로 매도 압력이 끝났다고 볼 수 없습니다.',shape:[[82,88,17,24],[43,67,35,58]],context:'하락 후'},
+ {id:'harami_bear',name:'하락 잉태형',group:'bearish',bars:2,tag:'큰 양봉 안의 작은 음봉',story:'큰 양봉 다음의 작은 음봉 몸통이 앞 몸통 안에 들어옵니다. 상승 속도가 줄었는지 살피는 형태입니다.',rule:'앞선 상승 + 긴 양봉 다음 음봉의 몸통이 안에 포함. 뒤 몸통 ≤ 앞 몸통의 50%, 앞 몸통 비율 ≥ 55%, 앞 몸통 ≥ 이전 몸통 중앙값×1.3.',remember:'상승이 잠시 숨을 고름',watch:'횡보 후 다시 상승할 수도 있어 후속 봉 확인이 필요합니다.',shape:[[24,88,17,82],[58,67,35,43]],context:'상승 후'},
+ {id:'morning',name:'샛별형',group:'bullish',bars:3,tag:'음봉 → 작은 봉 → 회복 양봉',story:'하락한 뒤 작은 봉이 몸통 갭 아래에 자리하고, 이어지는 양봉이 첫 음봉의 절반 이상을 회복합니다.',rule:'하락 추세 + 긴 음봉 + 몸통이 그 아래로 떨어진 작은 봉(≤ 첫 몸통의 35%) + 첫 몸통 중간값 위로 마감하는 양봉. 두 번째와 세 번째 사이 갭은 필수 아님.',remember:'내려감, 멈칫, 회복',watch:'이 앱은 첫 봉과 둘째 봉 사이의 몸통 갭을 요구하는 엄격한 후보만 표시합니다.',shape:[[86,90,38,42],[28,34,13,24],[30,80,25,72]],context:'하락 후'},
+ {id:'evening',name:'석별형',group:'bearish',bars:3,tag:'양봉 → 작은 봉 → 하락 음봉',story:'상승한 뒤 작은 봉이 몸통 갭 위에 자리하고, 이어지는 음봉이 첫 양봉의 절반 아래로 내려옵니다.',rule:'상승 추세 + 긴 양봉 + 몸통이 그 위로 떨어진 작은 봉(≤ 첫 몸통의 35%) + 첫 몸통 중간값 아래로 마감하는 음봉. 두 번째와 세 번째 사이 갭은 필수 아님.',remember:'올라감, 멈칫, 후퇴',watch:'종목과 거래시간 특성에 따라 이런 갭이 드물 수 있습니다.',shape:[[14,62,10,58],[72,87,66,76],[70,75,20,28]],context:'상승 후'},
+ {id:'three_bull',name:'적삼병',group:'bullish',bars:3,tag:'연속해서 높아지는 세 양봉',story:'하락 또는 횡보 뒤 세 양봉의 종가가 차례로 높아지는 모습입니다. 단순히 양봉 세 개와는 다릅니다.',rule:'앞선 하락/횡보 + 양봉 3개 + 종가 상승 + 뒤 시가가 앞 몸통 안. 각 몸통 ≥ 전체의 55%, 위꼬리 ≤ 20%.',remember:'세 걸음 연속 위로',watch:'세 봉을 기다리는 동안 이미 많이 올랐을 수 있습니다.',shape:[[17,47,12,43],[34,67,30,64],[55,89,51,85]],context:'하락·횡보 후'},
+ {id:'three_bear',name:'흑삼병',group:'bearish',bars:3,tag:'연속해서 낮아지는 세 음봉',story:'상승 또는 횡보 뒤 세 음봉의 종가가 차례로 낮아지는 모습입니다. 단순히 음봉 세 개와는 다릅니다.',rule:'앞선 상승/횡보 + 음봉 3개 + 종가 하락 + 뒤 시가가 앞 몸통 안. 각 몸통 ≥ 전체의 55%, 아래꼬리 ≤ 20%.',remember:'세 걸음 연속 아래로',watch:'세 음봉 뒤의 일시적 반등도 가능하므로 하락을 확정하지 않습니다.',shape:[[85,89,55,59],[68,72,35,39],[49,53,13,17]],context:'상승·횡보 후'}
+];
+const lesson=id=>LESSONS.find(x=>x.id===id);
+function analyze(cs){
+ return cs.map((c,i)=>{
+  const r=ratios(c),t=trend(cs,i),p=cs[i-1],a=cs[i-2],ids=[];
+  let key=r.dir>=0?'bull':'bear';
+  const prev=cs.slice(Math.max(0,i-10),i),histOK=prev.length>=5&&prev.every(x=>x.quality!=='low'&&!x.partial)&&!prev.slice(1).some(x=>x.gapBefore);
+  const bm=histOK?median(prev.map(x=>ratios(x).body)):null,rm=histOK?median(prev.map(x=>x.h-x.l)):null;
+  if(r.range<=0)key='flat';
+  else if(r.br<=.10){key=r.lower/r.range>=.65&&r.upper/r.range<=.10?'dragonfly':r.upper/r.range>=.65&&r.lower/r.range<=.10?'gravestone':'doji';}
+  else if(r.br<=.35&&r.lower>=2*r.body&&r.upper<=Math.max(.6*r.body,.1*r.range)){key=t==='down'?'hammer':t==='up'?'hanging':'lower';}
+  else if(r.br<=.35&&r.upper>=2*r.body&&r.lower<=Math.max(.6*r.body,.1*r.range)){key=t==='down'?'inverted':t==='up'?'shooting':'upper';}
+  else if(r.br>=.9&&r.upper<=.05*r.range+1e-8&&r.lower<=.05*r.range+1e-8){key=r.dir>0?'maru_bull':'maru_bear';}
+  else if(histOK&&r.br>=.65&&r.body>=1.6*bm&&r.body>=.5*rm){key=r.dir>0?'long_bull':'long_bear';}
+  else if(r.br<=.30&&r.upper>=.20*r.range&&r.lower>=.20*r.range){key='spinning';}
+  if(c.quality==='low')key='uncertain';
+  ids.push(key);
+  const valid=(start)=>cs.slice(start,i+1).every(x=>x.quality!=='low')&&!cs.slice(start+1,i+1).some(x=>x.gapBefore);
+  if(p&&valid(i-1)){
+   const q=ratios(p),tt=trend(cs,i-1),ct=Math.max(c.o,c.c),cb=Math.min(c.o,c.c),pt=Math.max(p.o,p.c),pb=Math.min(p.o,p.c),eps=Math.max(r.range,q.range)*1e-7;
+   if(q.br>.10&&r.br>=.5&&r.body>q.body+eps&&cb<=pb+eps&&ct>=pt-eps){
+    if(q.dir<0&&r.dir>0&&tt==='down')ids.push('engulf_bull');
+    if(q.dir>0&&r.dir<0&&tt==='up')ids.push('engulf_bear');
+   }
+   const ph=cs.slice(Math.max(0,i-11),i-1),pbm=median(ph.map(x=>ratios(x).body));
+   if(ph.length>=5&&q.br>=.55&&q.body>=pbm*1.3&&r.br>.1&&r.body<=q.body*.5&&cb>=pb-eps&&ct<=pt+eps){
+    if(q.dir<0&&r.dir>0&&tt==='down')ids.push('harami_bull');
+    if(q.dir>0&&r.dir<0&&tt==='up')ids.push('harami_bear');
+   }
+  }
+  if(a&&p&&valid(i-2)){
+   const ar=ratios(a),pr=ratios(p),tt=trend(cs,i-2),ah=cs.slice(Math.max(0,i-12),i-2),abm=median(ah.map(x=>ratios(x).body));
+   const longFirst=ah.length>=5&&ar.br>=.55&&ar.body>=1.2*abm;
+   if(longFirst&&pr.body<=ar.body*.35&&r.br>=.55){
+    if(tt==='down'&&ar.dir<0&&r.dir>0&&Math.max(p.o,p.c)<a.c&&c.c>(a.o+a.c)/2&&c.c>Math.max(p.o,p.c))ids.push('morning');
+    if(tt==='up'&&ar.dir>0&&r.dir<0&&Math.min(p.o,p.c)>a.c&&c.c<(a.o+a.c)/2&&c.c<Math.min(p.o,p.c))ids.push('evening');
+   }
+   if([ar,pr,r].every(x=>x.dir>0&&x.br>=.55&&x.upper/x.range<=.20)&&a.c<p.c&&p.c<c.c&&p.o>=a.o&&p.o<=a.c&&c.o>=p.o&&c.o<=p.c&&['down','flat'].includes(tt))ids.push('three_bull');
+   if([ar,pr,r].every(x=>x.dir<0&&x.br>=.55&&x.lower/x.range<=.20)&&a.c>p.c&&p.c>c.c&&p.o<=a.o&&p.o>=a.c&&c.o<=p.o&&c.o>=p.c&&['up','flat'].includes(tt))ids.push('three_bear');
+  }
+  const directional=ids.filter(id=>['bullish','bearish'].includes(lesson(id)?.group));
+  let follow='방향 예측 대신 다음 봉의 고가·저가와 마감을 비교하세요.';
+  if(directional.length){
+   const g=lesson(directional.at(-1)).group,n=cs[i+1];
+   if(!n||n.partial||c.partial)follow='후속 완성 봉이 없어 아직 확인할 수 없습니다.';
+   else if(n.quality==='low'||n.gapBefore)follow='후속 봉의 인식·연속성이 불확실해 판정을 보류합니다.';
+   else if(g==='bullish')follow=n.c>c.h?'바로 다음 완성 봉의 종가가 이 봉 고가를 넘었습니다. 이후 상승 보장은 아닙니다.':n.c<c.l?'바로 다음 완성 봉의 종가가 이 봉 저가 아래입니다. 회복 기대와 반대의 움직임입니다.':'바로 다음 완성 봉은 고가 위로 종가 돌파하지 못했습니다. 확인 미충족입니다.';
+   else follow=n.c<c.l?'바로 다음 완성 봉의 종가가 이 봉 저가 아래입니다. 이후 하락 보장은 아닙니다.':n.c>c.h?'바로 다음 완성 봉의 종가가 이 봉 고가 위입니다. 약화 기대와 반대의 움직임입니다.':'바로 다음 완성 봉은 저가 아래로 종가 이탈하지 않았습니다. 확인 미충족입니다.';
+  }
+  return {index:i,key,ids,trend:t,r,follow,primary:ids.at(-1),partial:!!c.partial};
+ });
+}
+function hue(r,g,b){r/=255;g/=255;b/=255;const max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min;let h=0;if(d){if(max===r)h=((g-b)/d)%6;else if(max===g)h=(b-r)/d+2;else h=(r-g)/d+4;h*=60;if(h<0)h+=360;}return [h,max?d/max:0,max];}
+function colorHue(hex){return hue(parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16))[0];}
+function colorDistance(a,b){return Math.min(Math.abs(a-b),360-Math.abs(a-b));}
+function recognize(image,crop,options={}){
+ const fullW=image.width,fullH=image.height;
+ const x0=clamp(Math.floor(crop.x),0,fullW-1),y0=clamp(Math.floor(crop.y),0,fullH-1),w=clamp(Math.floor(crop.w),1,fullW-x0),h=clamp(Math.floor(crop.h),1,fullH-y0),data=image.data;
+ if(w<15||h<15)throw new Error('영역이 너무 작습니다. 가격 차트 전체를 선택하세요.');
+ const hsvHex=hex=>hue(parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16));
+ const upHSV=hsvHex(options.up||'#e54d60'),downHSV=hsvHex(options.down||'#3c82f6'),upHue=upHSV[0],downHue=downHSV[0],tol=options.tolerance||22;
+ if(colorDistance(upHue,downHue)<tol*1.1)throw new Error('양봉과 음봉 색이 너무 비슷합니다. 서로 다른 색을 지정하세요.');
+ const mask=new Uint8Array(w*h),seen=new Uint8Array(w*h),queue=new Int32Array(w*h),items=[];
+ let colorPixels=0;
+ for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+  const p=((y+y0)*fullW+x+x0)*4;if(data[p+3]<100)continue;
+  const [hh,s,v]=hue(data[p],data[p+1],data[p+2]);if(s<.30||v<.18)continue;
+  const u=s>=Math.max(.30,upHSV[1]-.30)&&v>=Math.max(.18,upHSV[2]-.35)?colorDistance(hh,upHue):999,d=s>=Math.max(.30,downHSV[1]-.30)&&v>=Math.max(.18,downHSV[2]-.35)?colorDistance(hh,downHue):999;if(Math.min(u,d)<=tol){mask[y*w+x]=u<d?1:2;colorPixels++;}
+ }
+ let components=0;
+ for(let z=0;z<mask.length;z++){
+  if(!mask[z]||seen[z])continue;
+  const type=mask[z];let head=0,tail=1;queue[0]=z;seen[z]=1;
+  let minx=w,miny=h,maxx=0,maxy=0;
+  while(head<tail){
+   const cur=queue[head++],cy=(cur/w)|0,cx=cur-cy*w;
+   minx=Math.min(minx,cx);maxx=Math.max(maxx,cx);miny=Math.min(miny,cy);maxy=Math.max(maxy,cy);
+   for(let dy=-1;dy<=1;dy++){let ny=cy+dy;if(ny<0||ny>=h)continue;for(let dx=-1;dx<=1;dx++){if(!dx&&!dy)continue;let nx=cx+dx;if(nx<0||nx>=w)continue;let nz=ny*w+nx;if(!seen[nz]&&mask[nz]===type){seen[nz]=1;queue[tail++]=nz;}}}
+  }
+  components++;
+  const bw=maxx-minx+1,bh=maxy-miny+1;
+  if(tail<7||bh<5||bw>Math.min(120,w*.09)||bw>bh*4||minx===0||maxx===w-1)continue;
+  const counts=new Uint16Array(bh);let sumx=0;
+  for(let j=0;j<tail;j++){let pos=queue[j],yy=(pos/w)|0,xx=pos-yy*w;counts[yy-miny]++;sumx+=xx;}
+  const widest=Math.max(...counts),thr=Math.max(2,Math.ceil(widest*.65));
+  let bestStart=0,bestLen=0,start=-1;
+  for(let j=0;j<=bh;j++){
+   if(j<bh&&counts[j]>=thr){if(start<0)start=j;}
+   else if(start>=0){if(j-start>bestLen){bestLen=j-start;bestStart=start;}start=-1;}
+  }
+  let bodyTop=miny+bestStart,bodyBottom=bodyTop+Math.max(0,bestLen-1),quality='auto';
+  // A hollow rectangle has wide top/bottom borders but sparse middle rows. Reject it as ambiguous.
+  const wideRows=[];for(let j=0;j<bh;j++)if(counts[j]>=thr)wideRows.push(j);
+  let hollow=false;
+  if(widest>=4&&wideRows.length>=2&&wideRows.at(-1)-wideRows[0]>Math.max(5,bestLen*3)){
+   const span=wideRows.at(-1)-wideRows[0]+1,inside=counts.slice(wideRows[0],wideRows.at(-1)+1);
+   if(mean([...inside])<widest*.65&&mean([...inside])>=1.5){hollow=true;quality='low';bodyTop=miny+wideRows[0];bodyBottom=miny+wideRows.at(-1);}
+  }
+  let xs=[];for(let j=0;j<tail;j++){let pos=queue[j],yy=(pos/w)|0;if(yy>=bodyTop&&yy<=bodyBottom)xs.push(pos-yy*w);}
+  let center=xs.length?median(xs):(minx+maxx)/2;
+  if(!bestLen||widest<=2){quality='low';bodyTop=Math.round((miny+maxy)/2);bodyBottom=bodyTop;center=(minx+maxx)/2;}
+  if(bw>Math.max(4,widest)*1.8||bw>30||bh<9)quality='low';
+  // Extend monochrome wicks only if a narrow, contrasting vertical run touches the body.
+  let high=miny,low=maxy;const cx=Math.round(center);
+  const pix=(x,y)=>{let p=((y+y0)*fullW+x+x0)*4;return [data[p],data[p+1],data[p+2]];};
+  const isNarrow=(yy)=>{
+   if(yy<0||yy>=h)return false;
+   // Even-width bodies have half-pixel centers; a one-pixel wick may lie on either side.
+   for(let xx=Math.max(0,Math.floor(center)-1);xx<=Math.min(w-1,Math.ceil(center)+1);xx++){
+    const core=pix(xx,yy),lh=pix(clamp(xx-Math.max(4,bw),0,w-1),yy),rh=pix(clamp(xx+Math.max(4,bw),0,w-1),yy),bg=lh.map((v,k)=>(v+rh[k])/2);
+    const distance=Math.sqrt(core.reduce((s,v,k)=>s+(v-bg[k])**2,0));
+    const hv=hue(...core),target=type===1?upHue:downHue;
+    if(distance>55&&(hv[1]<.50||colorDistance(hv[0],target)<=tol+12))return true;
+   }
+   return false;
+  };
+  for(let yy=high-1;yy>=0;yy--){if(isNarrow(yy))high=yy;else if(yy>0&&isNarrow(yy-1)){high=--yy;}else break;}
+  for(let yy=low+1;yy<h;yy++){if(isNarrow(yy))low=yy;else if(yy+1<h&&isNarrow(yy+1)){low=++yy;}else break;}
+  if(high===0||low===h-1)quality='low';
+  const dy=type===1?1:-1;
+  items.push({x:x0+center,yH:y0+high,yL:y0+low,yO:y0+(dy>0?bodyBottom:bodyTop),yC:y0+(dy>0?bodyTop:bodyBottom),width:Math.max(2,widest),dir:dy,quality,source:'image',area:tail,hollow});
+ }
+ items.sort((a,b)=>a.x-b.x);
+ const filtered=[];
+ for(const c of items){const p=filtered.at(-1);if(p&&Math.abs(c.x-p.x)<Math.max(2,Math.min(c.width,p.width)*.65)){if(c.area>p.area)filtered[filtered.length-1]=c;}else filtered.push(c);}
+ const gaps=filtered.slice(1).map((c,i)=>c.x-filtered[i].x),pitch=median(gaps);
+ filtered.forEach((c,i)=>{c.gapBefore=i>0&&pitch>0&&(c.x-filtered[i-1].x)>pitch*1.65;});
+ const warnings=[];
+ if(filtered.length>2000)throw new Error('후보가 2,000개를 넘습니다. 글자·거래량을 제외하고 가격 봉 영역만 더 작게 선택하세요.');
+ if(filtered.length>=5&&new Set(filtered.map(c=>c.dir)).size===1)warnings.push('한 방향의 색상만 인식했습니다. 양봉·음봉 색상 규칙이 원본 차트와 같은지 먼저 확인하세요.');
+ if(filtered.length===0)warnings.push('캔들 후보를 찾지 못했습니다. 영역·색상·선명도를 확인하고 직접 추가 기능을 사용하세요.');
+ if(filtered.some(c=>c.quality==='low'))warnings.push('가늘거나 잘린 봉, 중공형 또는 선과 겹친 후보가 있습니다. 재확인 표시를 먼저 살펴보세요.');
+ if(filtered.some(c=>c.gapBefore))warnings.push('봉 사이 간격이 크게 벌어진 곳이 있습니다. 누락 가능 구간을 가로지르는 조합 패턴은 판독하지 않습니다.');
+ if(filtered.length>200)warnings.push('촘촘한 차트입니다. 캔들을 확대해 캡처하면 몸통과 꼬리 구분이 더 쉬워집니다.');
+ return {candles:filtered,warnings,components,colorPixels,pitch};
+}
+function mapGeometry(raw,height,calibration=null,axis='linear'){
+ const toPrice=y=>{
+  if(!calibration)return height-y;
+  const {y1,p1,y2,p2}=calibration,t=(y-y1)/(y2-y1);
+  return axis==='log'?Math.exp(Math.log(p1)+t*(Math.log(p2)-Math.log(p1))):p1+t*(p2-p1);
+ };
+ return raw.map(c=>({...c,o:c.exact?c.o:toPrice(c.yO),h:c.exact?c.h:toPrice(c.yH),l:c.exact?c.l:toPrice(c.yL),c:c.exact?c.c:toPrice(c.yC)}));
+}
+function csvRows(text){
+ const lines=[];let row=[],field='',quoted=false;
+ text=text.replace(/^\uFEFF/,'');
+ for(let i=0;i<text.length;i++){const ch=text[i];if(ch==='"'){if(quoted&&text[i+1]==='"'){field+='"';i++;}else quoted=!quoted;}else if(ch===','&&!quoted){row.push(field);field='';}else if((ch==='\n'||ch==='\r')&&!quoted){if(ch==='\r'&&text[i+1]==='\n')i++;row.push(field);if(row.some(x=>x.trim()))lines.push(row);row=[];field='';}else field+=ch;}
+ if(quoted)throw new Error('CSV의 따옴표가 닫히지 않았습니다.');
+ if(field||row.length){row.push(field);if(row.some(x=>x.trim()))lines.push(row);}
+ return lines;
+}
+function parseCSV(text){
+ const rows=csvRows(text);if(rows.length<2)throw new Error('제목 행과 데이터 행이 필요합니다.');
+ const head=rows.shift().map(x=>x.trim().toLowerCase()),find=names=>head.findIndex(x=>names.includes(x));
+ const idx={o:find(['open','시가']),h:find(['high','고가']),l:find(['low','저가']),c:find(['close','종가']),date:find(['date','datetime','time','일자','날짜','시간']),volume:find(['volume','거래량'])};
+ if(['o','h','l','c'].some(k=>idx[k]<0))throw new Error('CSV 제목에 open, high, low, close 또는 시가, 고가, 저가, 종가가 필요합니다.');
+ if(rows.length>2000)throw new Error('한 번에 최대 2,000봉을 불러올 수 있습니다.');
+ const num=(s,row,key)=>{if(s==null||s.trim()==='')throw new Error(`${row}행 ${key} 값이 비었습니다.`);let v=Number(s.replaceAll(',','').trim());if(!Number.isFinite(v)||v<=0)throw new Error(`${row}행 ${key} 값이 올바른 양수가 아닙니다.`);return v;};
+ const cs=rows.map((r,i)=>{
+  let c={};for(const k of ['o','h','l','c'])c[k]=num(r[idx[k]],i+2,k);
+  if(c.h<Math.max(c.o,c.c)||c.l>Math.min(c.o,c.c)||c.h<c.l)throw new Error(`${i+2}행: 고가 ≥ 시가·종가 ≥ 저가 조건을 확인하세요.`);
+  c.date=idx.date>=0?(r[idx.date]||'').trim():'';c.volume=null;
+  if(idx.volume>=0&&r[idx.volume]?.trim()){let v=Number(r[idx.volume].replaceAll(',',''));if(!Number.isFinite(v)||v<0)throw new Error(`${i+2}행: 거래량이 잘못되었습니다.`);c.volume=v;}
+  c.exact=true;c.source='csv';c.quality='data';return c;
+ });
+ // Preserve explicit row order; verify standardized dates instead of silently changing chronology.
+ const dates=cs.map(c=>c.date);const standardized=dates.every(x=>/^\d{4}-\d{2}-\d{2}(?:[ T]\d{2}:\d{2}(?::\d{2})?)?$/.test(x));
+ if(standardized){for(let i=1;i<dates.length;i++)if(dates[i]<=dates[i-1])throw new Error('날짜·시간이 중복되었거나 역순입니다. 오래된 봉부터 정렬한 CSV를 사용하세요.');}
+ return {candles:cs,dateOrderChecked:standardized};
+}
+const API={median,mean,clamp,ratios,trend,LESSONS,lesson,analyze,recognize,mapGeometry,parseCSV,hue,colorHue};
+if(typeof module!=='undefined'&&module.exports)module.exports=API;root.CandleCore=API;
+})(typeof globalThis!=='undefined'?globalThis:this);
+</script>
+<script>(function(){
+'use strict';
+const C=CandleCore,$=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
+const S={image:null,raw:[],candles:[],analysis:[],selected:-1,crop:null,previewCrop:null,mode:null,source:'demo',fileName:'',cal:null,undo:[],warnings:[],blocked:false,busy:false,group:'all',learned:new Set(),quiz:{index:0,answers:[]}};
+const trendNames={up:'상승',down:'하락',flat:'횡보',unknown:'판단 보류'};
+const specialNames={uncertain:'판독 보류',flat:'가격 변동 없음'};
+const nameOf=id=>C.lesson(id)?.name||specialNames[id]||id;
+const groupNames={basic:'기본 형태',neutral:'중립 형태',bullish:'상승 전환 후보',bearish:'하락 전환 후보'};
+const groupClass={basic:'neutral',neutral:'purple',bullish:'up',bearish:'down'};
+let toastTimer,drawScheduled=false;
+function toast(t){$('toast').textContent=t;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),4300);}
+function setPage(page){document.querySelectorAll('.page').forEach(p=>p.hidden=p.id!=='page-'+page);document.querySelectorAll('[data-page]').forEach(b=>{b.classList.toggle('active',b.dataset.page===page);if(b.dataset.page===page)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});$('breadcrumb').textContent={analyze:'차트 분석',learn:'캔들 사전',quiz:'연습 퀴즈',guide:'사용법 · 기준'}[page];if(page==='learn')renderLessons();if(page==='quiz')renderQuiz();window.scrollTo({top:0,behavior:'smooth'});}
+function badge(text,kind='neutral'){return `<span class="pill ${kind}">${esc(text)}</span>`;}
+function saveUndo(){S.undo.push({raw:structuredClone(S.raw),crop:{...S.crop},cal:S.cal?{...S.cal}:null,selected:S.selected,warnings:S.warnings.slice()});if(S.undo.length>20)S.undo.shift();$('undoBtn').disabled=false;}
+function undo(){const prev=S.undo.pop();if(!prev)return;Object.assign(S,prev);setMode(null);recompute();$('undoBtn').disabled=!S.undo.length;toast('이전 상태로 되돌렸습니다.');}
+function refreshGaps(){const gaps=S.raw.slice(1).map((x,i)=>x.x-S.raw[i].x),pitch=C.median(gaps);S.raw.forEach((c,i)=>c.gapBefore=i>0&&pitch>0&&c.x-S.raw[i-1].x>pitch*1.65);}
+function recompute(){
+ S.blocked=$('axis').value==='log'&&!S.cal&&S.source!=='csv';
+ S.candles=C.mapGeometry(S.raw,S.image?.height||560,S.cal,$('axis').value).map((c,i)=>({...c,partial:$('inProgress').checked&&i===S.raw.length-1}));
+ if(S.blocked)S.analysis=S.candles.map((c,i)=>({index:i,key:'uncertain',ids:['uncertain'],primary:'uncertain',trend:'unknown',r:C.ratios(c),follow:'로그 가격축의 두 눈금을 먼저 지정하세요.',partial:c.partial}));
+ else S.analysis=C.analyze(S.candles);
+ S.selected=C.clamp(S.selected,0,S.candles.length-1);if(!S.candles.length)S.selected=-1;
+ renderAll();
+}
+function renderAll(){draw();renderDetail();renderStats();renderTable();updateMeta();}
+function updateMeta(){
+ $('sourceBadge').className='pill '+(S.source==='demo'?'amber':S.source==='csv'?'mint':'purple');
+ $('sourceBadge').textContent=S.source==='demo'?'가상 예제 · 실제 시세 아님':S.source==='csv'?'사용자 제공 OHLC 수치':'이미지 판독 · 추정값';
+ $('imageMeta').textContent=S.image?`${S.image.width.toLocaleString()} × ${S.image.height.toLocaleString()}px · ${S.source==='csv'?'CSV 재구성':S.source==='demo'?'가상 연습 이미지':S.fileName||'붙여넣은 이미지'}`:'이미지를 불러오세요.';
+ $('calInfo').textContent=S.source==='csv'?'CSV 제공값 사용 · 날짜는 파일에 있을 때만 표시합니다.':S.cal?`가격 눈금 지정됨 · ${fmt(S.cal.p1)} / ${fmt(S.cal.p2)} · ${$('axis').value==='log'?'로그':'선형'} 보간 근사값 (≈)`:'가격 눈금 미지정: 가격·날짜를 추측하지 않고 모양만 분석합니다.';
+ let warns=S.warnings.slice();if(S.blocked)warns.unshift('로그 가격축은 두 가격 눈금을 지정해야 패턴을 분석할 수 있습니다.');
+ if(S.source!=='csv'&&S.raw.length)warns.push('자동 인식 개수는 실제 봉 수와 다를 수 있습니다. 모든 번호를 원본과 대조하세요.');
+ $('recognitionWarning').hidden=!warns.length;$('recognitionWarning').textContent=warns.join(' ');
+ for(const id of ['cropBtn','detectBtn','pickUp','pickDown','calibrateBtn','resetCalBtn','addBtn','axis','palette','upColor','downColor','tolerance'])$(id).disabled=S.source==='csv'||!S.image||S.busy;
+ $('undoBtn').disabled=!S.undo.length||S.busy;
+}
+function fmt(n){return Number.isFinite(n)?n.toLocaleString('ko-KR',{maximumFractionDigits:2}):'—';}
+function price(c,k){return c.exact?fmt(c[k]):S.cal?'≈ '+fmt(c[k]):'미지정';}
+function svgPattern(id,big=false){
+ const l=C.lesson(id);if(!l)return '<svg viewBox="0 0 180 120" aria-label="판독 보류"><text x="90" y="68" text-anchor="middle" fill="#8494aa" font-size="34">?</text></svg>';
+ const cs=l.shape,n=cs.length,w=180,step=n===1?0:46,start=n===1?90:(w-(n-1)*step)/2;
+ let s=`<svg viewBox="0 0 180 120" role="img" aria-label="${esc(l.name)} 교육용 모양"><path d="M15 98h150" stroke="#e3e9f1" stroke-dasharray="3 4"/>`;
+ cs.forEach((a,i)=>{let [o,h,lo,c]=a,x=start+i*step,co=c>=o?'#df5063':'#347ce3',y=p=>104-p*.95,bh=Math.max(2,Math.abs(c-o)*.95);s+=`<path d="M${x} ${y(h)}V${y(lo)}" stroke="${co}" stroke-width="2"/><rect x="${x-9}" y="${y(Math.max(o,c))}" width="18" height="${bh}" rx="1.4" fill="${co}"/>`;});
+ if(l.context)s+=`<text x="90" y="118" text-anchor="middle" fill="#7c8ba0" font-size="9">${esc(l.context)}</text>`;
+ return s+'</svg>';
+}
+function svgReal(c,a){const r=a.r;if(!r.range)return svgPattern(null);const y=p=>105-(p-c.l)/r.range*90,co=c.c>=c.o?'#df5063':'#347ce3';return `<svg viewBox="0 0 70 120" role="img" aria-label="선택한 봉의 인식 형태"><path d="M35 ${y(c.h)}V${y(c.l)}" stroke="${co}" stroke-width="2"/><rect x="23" y="${y(Math.max(c.o,c.c))}" width="24" height="${Math.max(2,r.body/r.range*90)}" rx="1.5" fill="${co}"/></svg>`;}
+function quality(c){return c.quality==='low'?['재확인 필요','amber']:c.quality==='manual'?['직접 보정','mint']:c.exact?['CSV 제공 수치','mint']:['형태 추정','neutral'];}
+function selectedInfo(){const i=S.selected;return {i,c:S.candles[i],a:S.analysis[i]};}
+function renderDetail(){
+ const {i,c,a}=selectedInfo();if(!c){$('detailCard').innerHTML='<div class="detail-header"><div class="kicker">CANDLE INSPECTOR</div><h2 style="margin-top:8px">한 봉씩 읽어 보세요</h2></div><div class="empty">차트 영역을 지정하고 캔들을 인식하면<br>개별 해설이 여기에 나타납니다.<br><br>자동 인식이 어려운 봉은<br>‘누락 봉 추가’로 직접 표시하세요.</div>';return;}
+ const primary=C.lesson(a.primary),pcts=[a.r.br,a.r.range?a.r.upper/a.r.range:0,a.r.range?a.r.lower/a.r.range:0].map(x=>Math.round(x*100));
+ const kind=primary?.group||'neutral',unknown=a.key==='uncertain';
+ const head=(primary?.name||nameOf(a.key))+(a.partial?' · 잠정':'');
+ const fact=unknown?(S.blocked?'로그 축 눈금 미지정으로 모양 해석을 보류했습니다.':'몸통이나 꼬리가 모호합니다. 원본과 대조한 뒤 직접 보정하세요.'):a.r.range===0?'고가와 저가가 같은 봉입니다. 형태로 방향을 판단하지 않습니다.':`${a.r.dir>0?'시가보다 종가가 높은 양봉':a.r.dir<0?'시가보다 종가가 낮은 음봉':'시가와 종가가 같은 봉'}입니다.${c.partial?' 여기서 종가는 아직 진행 중인 가격입니다.':''} ${primary?.story||''}`;
+ let volume='';if(c.volume!=null){const vs=S.candles.slice(Math.max(0,i-10),i).map(x=>x.volume).filter(v=>v!=null);const vm=C.mean(vs);volume=`<div class="detail-label">제공된 거래량</div><p class="detail-text">${fmt(c.volume)}${vs.length>=5&&vm>0?` · 직전 ${vs.length}봉 평균의 ${(c.volume/vm).toFixed(2)}배`:''}. 거래량만으로 방향을 확정하지 않습니다.</p>`;}
+ $('detailCard').innerHTML=`<div class="detail-header"><div class="kicker">CANDLE INSPECTOR &nbsp;/&nbsp; #${String(i+1).padStart(3,'0')}</div><div class="detail-title"><h2>${esc(head)}</h2></div><div class="detail-sub">${esc(c.date||$('timeframe').value+' · 날짜 미판독')} &nbsp; ${badge(groupNames[kind]||'확인 필요',groupClass[kind])}</div></div><div class="detail-content"><div><div class="mini-candle">${svgReal(c,a)}<div class="metrics"><div class="metric-line"><span>몸통</span><b>${unknown?'—':pcts[0]+'%'}</b></div><div class="metric-line"><span>위꼬리</span><b>${unknown?'—':pcts[1]+'%'}</b></div><div class="metric-line"><span>아래꼬리</span><b>${unknown?'—':pcts[2]+'%'}</b></div><div class="bar"><span class="segment-upper" style="width:${pcts[1]}%"></span><span class="segment-body" style="width:${pcts[0]}%"></span><span class="segment-lower" style="width:${pcts[2]}%"></span></div><small style="font-size:9px;color:var(--muted)">전체 고저 범위 대비${c.exact?'':' · 추정'}</small></div></div><div class="ohlc-grid">${[['o','시가'],['h','고가'],['l','저가'],['c',c.partial?'진행 중 가격':'종가']].map(([k,l])=>`<div>${l}<b>${price(c,k)}</b></div>`).join('')}</div></div><div><div class="detail-label">쉽게 읽으면</div><p class="detail-text">${esc(fact)}</p><div class="detail-label">위치와 확인</div><p class="detail-text">앞선 5봉: <b>${trendNames[a.trend]}</b>. ${c.gapBefore?'바로 앞에 누락 가능 구간이 있습니다. ':''}${esc(a.follow)}</p>${volume}</div>${primary?`<div class="detail-quote">${esc(primary.remember)}</div>`:''}<div class="detail-tags">${a.ids.map(id=>C.lesson(id)?`<button class="pill ${groupClass[C.lesson(id).group]}" data-lesson="${id}">${esc(nameOf(id))} ↗</button>`:badge(nameOf(id),'amber')).join('')} ${badge(...quality(c))}</div><div class="detail-nav"><button class="btn small" id="prevCandle" ${i===0?'disabled':''}>← 이전 봉</button><button class="btn small soft" id="learnSelected" ${!primary?'disabled':''}>이 패턴 공부</button><button class="btn small" id="nextCandle" ${i===S.raw.length-1?'disabled':''}>다음 봉 →</button></div><div class="detail-footer"><button class="btn small" id="editSelected" ${S.source==='csv'?'disabled':''}>모양 직접 고치기</button><button class="btn small danger" id="deleteSelected" ${S.source==='csv'?'disabled':''}>오인식 삭제</button></div></div>`;
+ $('prevCandle').onclick=()=>select(i-1);$('nextCandle').onclick=()=>select(i+1);$('learnSelected').onclick=()=>openLesson(a.primary);$('editSelected').onclick=()=>startManual(i);$('deleteSelected').onclick=()=>{if(confirm(`#${i+1} 후보를 삭제할까요? 원본 이미지는 지워지지 않습니다.`)){saveUndo();S.raw.splice(i,1);refreshGaps();recompute();toast('후보를 삭제했습니다. 되돌리기로 복구할 수 있습니다.');}};
+ $('detailCard').querySelectorAll('[data-lesson]').forEach(b=>b.onclick=()=>openLesson(b.dataset.lesson));
+}
+function renderStats(){
+ const complete=S.candles.filter(c=>!c.partial),valid=S.analysis.filter((a,i)=>!S.candles[i].partial&&S.candles[i].quality!=='low'),n=complete.length,look=Math.min(12,n),end=S.candles.length-($('inProgress').checked&&S.candles.length?1:0);
+ const t=S.blocked?'unknown':look>=5?C.trend(S.candles,end,look):'unknown',countGroup=g=>valid.filter(a=>a.ids.some(id=>C.lesson(id)?.group===g)).length;
+ $('stats').innerHTML=`<div class="panel stat"><div class="stat-label">인식된 캔들 후보</div><div class="stat-value">${S.raw.length} <small>개</small></div><div class="stat-foot">완성 표시 ${n}개 · 재확인 ${S.raw.filter(c=>c.quality==='low').length}개</div></div><div class="panel stat"><div class="stat-label">최근 ${look||'—'}개 완성 봉의 종가</div><div class="stat-value" style="font-size:21px">${trendNames[t]}</div><div class="stat-foot">이 캡처 구간의 관찰 · 미래 예측 아님</div></div><div class="panel stat"><div class="stat-label">전환 형태 후보 · 완성 봉만</div><div class="stat-value"><span style="color:var(--up)">${S.blocked?'—':countGroup('bullish')}</span> <small>상승</small> &nbsp;<span style="color:var(--down)">${S.blocked?'—':countGroup('bearish')}</span> <small>하락</small></div><div class="stat-foot">개수는 매수·매도 점수가 아닙니다.</div></div>`;
+}
+function renderTable(){
+ const q=$('search').value.trim().toLowerCase(),filter=$('filter').value;let out=[],shown=0;
+ S.candles.forEach((c,i)=>{const a=S.analysis[i],names=a.ids.map(nameOf).join(' · '),groups=a.ids.map(id=>C.lesson(id)?.group);if(q&&!(`${i+1} ${names} ${c.date||''}`.toLowerCase().includes(q)))return;if(filter==='review'&&c.quality!=='low')return;if(filter==='multi'&&!a.ids.some(id=>C.lesson(id)?.bars>1))return;if(['bullish','bearish','neutral'].includes(filter)&&!groups.includes(filter))return;shown++;
+ const r=a.r,pct=r.range?`${Math.round(r.br*100)} / ${Math.round(r.upper/r.range*100)} / ${Math.round(r.lower/r.range*100)}%`:'—';
+ const group=C.lesson(a.primary)?.group;
+ out.push(`<tr data-index="${i}" tabindex="0" role="button" aria-label="${i+1}번 ${esc(names)} 해설" class="${S.selected===i?'selected':''}"><td><span class="num">#${String(i+1).padStart(3,'0')}</span>${c.date?`<small style="display:block;font-size:9px;color:var(--muted)">${esc(c.date)}</small>`:''}${c.partial?'<small style="display:block;font-size:9px;color:var(--amber)">진행 중</small>':''}</td><td class="table-pattern"><span style="color:${group==='bullish'?'var(--up)':group==='bearish'?'var(--down)':'var(--ink)'}">${esc(nameOf(a.primary))}</span>${a.ids.length>1?`<small>단일 봉: ${esc(nameOf(a.key))}</small>`:''}</td><td>${trendNames[a.trend]}${c.gapBefore?'<small style="display:block;color:var(--amber);font-size:9px">앞 구간 누락 가능</small>':''}</td><td><span class="ratio-stack">${a.key==='uncertain'?'판독 보류':pct}</span></td><td>${badge(...quality(c))}</td></tr>`);
+ });
+ $('candleTable').innerHTML=out.length?out.join(''):'<tr><td colspan="5"><div class="empty">표시할 캔들이 없습니다. 영역·색상을 확인하거나 필터를 바꿔 주세요.</div></td></tr>';
+ $('tableCount').textContent=`전체 ${S.raw.length}개 중 ${shown}개 표시`;
+ $('candleTable').querySelectorAll('[data-index]').forEach(el=>{el.onclick=()=>select(Number(el.dataset.index));el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select(Number(el.dataset.index));}};});
+}
+function select(i){if(i<0||i>=S.raw.length)return;S.selected=i;renderDetail();draw();$('candleTable').querySelectorAll('tr.selected').forEach(x=>x.classList.remove('selected'));$('candleTable').querySelector(`[data-index="${i}"]`)?.classList.add('selected');}
+function draw(){
+ if(drawScheduled)return;drawScheduled=true;requestAnimationFrame(()=>{drawScheduled=false;paint();});
+}
+function paint(){
+ const cv=$('chart'),ctx=cv.getContext('2d');if(!S.image){ctx.fillStyle='#101c2f';ctx.fillRect(0,0,cv.width,cv.height);return;}
+ if(cv.width!==S.image.width||cv.height!==S.image.height){cv.width=S.image.width;cv.height=S.image.height;}
+ ctx.clearRect(0,0,cv.width,cv.height);ctx.drawImage(S.image,0,0);
+ const crop=S.previewCrop||S.crop;
+ const sc=cv.width/Math.max(1,cv.getBoundingClientRect().width),lw=Math.max(1,sc),fs=Math.max(11,10*sc);
+ if(crop){ctx.fillStyle='rgba(10,19,35,.33)';ctx.fillRect(0,0,cv.width,crop.y);ctx.fillRect(0,crop.y+crop.h,cv.width,cv.height-crop.y-crop.h);ctx.fillRect(0,crop.y,crop.x,crop.h);ctx.fillRect(crop.x+crop.w,crop.y,cv.width-crop.x-crop.w,crop.h);ctx.strokeStyle=S.mode?.type==='crop'?'#9caaff':'rgba(128,152,185,.6)';ctx.lineWidth=lw;ctx.setLineDash([4*lw,4*lw]);ctx.strokeRect(crop.x,crop.y,crop.w,crop.h);ctx.setLineDash([]);}
+ const labelStep=Math.max(1,Math.ceil(S.raw.length/55));
+ S.raw.forEach((c,i)=>{
+  const sel=i===S.selected,w=Math.max(c.width+6*sc,10*sc),xh=c.x-w/2,yh=c.yH-3*sc,hh=c.yL-c.yH+6*sc;
+  ctx.strokeStyle=sel?'#58ddbf':c.quality==='low'?'rgba(255,185,76,.8)':'rgba(135,162,220,.22)';ctx.lineWidth=sel?1.6*lw:.7*lw;if(sel){ctx.fillStyle='rgba(67,199,168,.12)';ctx.fillRect(xh,yh,w,hh);}ctx.strokeRect(xh,yh,w,hh);
+  if($('showNumbers').checked&&(i%labelStep===0||sel)){
+   const text=String(i+1),fy=C.clamp(c.yH-(i%2===0?10:22)*sc,fs+4,cv.height-5),bw=Math.max(fs+4*sc,text.length*fs*.63+6*sc);ctx.font=`600 ${fs}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=sel?'#27a58e':'rgba(24,39,62,.88)';ctx.fillRect(c.x-bw/2,fy-fs*.65,bw,fs*1.4);ctx.fillStyle=sel?'#fff':'#d9e4f8';ctx.fillText(text,c.x,fy+1);
+  }
+ });
+ if(S.mode?.points){ctx.lineWidth=1.5*lw;ctx.strokeStyle='#4ed0b4';ctx.setLineDash([4*lw,3*lw]);for(const p of S.mode.points){ctx.beginPath();ctx.moveTo(crop?.x||0,p.y);ctx.lineTo((crop?.x||0)+(crop?.w||cv.width),p.y);ctx.stroke();}ctx.setLineDash([]);}
+}
+function pointerXY(e){const b=$('chart').getBoundingClientRect();return {x:C.clamp((e.clientX-b.left)/b.width*$('chart').width,0,$('chart').width-1),y:C.clamp((e.clientY-b.top)/b.height*$('chart').height,0,$('chart').height-1)};}
+function setMode(mode){S.mode=mode;S.previewCrop=null;updateModeHint();draw();}
+function updateModeHint(){
+ const el=$('modeHint');el.classList.toggle('visible',!!S.mode);if(!S.mode)return;
+ const m=S.mode;let t='';
+ if(m.type==='crop')t='가격 봉만 포함하도록 왼쪽 위에서 오른쪽 아래로 드래그하세요. 거래량·축은 제외합니다.';
+ if(m.type==='pickUp'||m.type==='pickDown')t=`${m.type==='pickUp'?'양봉':'음봉'} 몸통 가운데의 색을 클릭하세요. 얇은 꼬리·가장자리는 피하세요.`;
+ if(m.type==='cal')t=m.points.length===0?`위쪽 가격 ${fmt(m.p1)}의 가로선 위치를 클릭하세요.`:`아래쪽 가격 ${fmt(m.p2)}의 가로선 위치를 클릭하세요.`;
+ if(m.type==='manual'){
+  const names=['고가: 윗꼬리 끝','몸통 위쪽 끝','몸통 아래쪽 끝','저가: 아래꼬리 끝'];
+  t=`${m.index==null?'새 봉 추가':'#'+(m.index+1)+' 보정'} · ${m.points.length+1}/4 ${names[m.points.length]}를 클릭하세요. `;
+  el.querySelector('span').innerHTML=esc(t)+`<select id="modeDir" style="padding:2px 5px;font-size:11px"><option value="1" ${m.dir===1?'selected':''}>양봉</option><option value="-1" ${m.dir===-1?'selected':''}>음봉</option></select>`;
+  $('modeDir').onchange=e=>{m.dir=Number(e.target.value);$('manualDirection').value=String(m.dir);};return;
+ }
+ el.querySelector('span').textContent=t;
+}
+let dragging=null;
+$('chart').addEventListener('pointerdown',e=>{
+ if(!S.image||S.busy)return;const p=pointerXY(e);
+ if(S.mode?.type==='crop'){dragging=p;$('chart').setPointerCapture(e.pointerId);S.previewCrop={x:p.x,y:p.y,w:0,h:0};}
+ else handlePoint(p);
+});
+$('chart').addEventListener('pointermove',e=>{
+ if(!S.image)return;const p=pointerXY(e);
+ if(dragging){S.previewCrop={x:Math.min(dragging.x,p.x),y:Math.min(dragging.y,p.y),w:Math.abs(p.x-dragging.x),h:Math.abs(p.y-dragging.y)};draw();}
+ else if(!S.mode&&S.raw.length){const near=S.raw.reduce((best,c,i)=>Math.abs(c.x-p.x)<best.dist?{i,dist:Math.abs(c.x-p.x)}:best,{i:0,dist:Infinity});$('chart').title=`#${near.i+1} ${nameOf(S.analysis[near.i]?.primary)} · 클릭하여 해설`;}
+});
+$('chart').addEventListener('pointerup',()=>{
+ if(!dragging)return;dragging=null;const cr=S.previewCrop;
+ if(!cr||cr.w<20||cr.h<20){S.previewCrop=null;draw();toast('영역이 너무 작습니다. 가격 봉 전체를 둘러싸도록 드래그하세요.');return;}
+ saveUndo();S.crop={x:Math.round(cr.x),y:Math.round(cr.y),w:Math.round(cr.w),h:Math.round(cr.h)};S.raw=[];setMode(null);detect(false);
+});
+$('chart').addEventListener('pointercancel',()=>{dragging=null;S.previewCrop=null;draw();});
+function handlePoint(p){
+ const m=S.mode;
+ if(!m){if(!S.raw.length)return;const near=S.raw.reduce((best,c,i)=>Math.abs(c.x-p.x)<best.dist?{i,dist:Math.abs(c.x-p.x)}:best,{i:0,dist:Infinity});select(near.i);return;}
+ if(m.type==='pickUp'||m.type==='pickDown'){
+  const rgb=S.image.getContext('2d',{willReadFrequently:true}).getImageData(Math.floor(p.x),Math.floor(p.y),1,1).data,[,sat,val]=C.hue(rgb[0],rgb[1],rgb[2]);
+  if(sat<.3||val<.18){toast('채도가 낮거나 너무 어두운 색입니다. 컬러 몸통 안쪽을 클릭하세요.');return;}
+  const hex='#'+[...rgb.slice(0,3)].map(x=>x.toString(16).padStart(2,'0')).join('');$(m.type==='pickUp'?'upColor':'downColor').value=hex;$('palette').value='custom';setMode(null);toast('색상을 선택했습니다. 캔들 인식을 다시 실행하세요.');return;
+ }
+ if(m.type==='cal'){
+  m.points.push(p);if(m.points.length===1){updateModeHint();draw();return;}
+  if(m.points[1].y<=m.points[0].y+5){m.points.pop();toast('낮은 가격 눈금은 위쪽 눈금보다 아래에 있어야 합니다.');return;}
+  const proposed={y1:m.points[0].y,p1:m.p1,y2:m.points[1].y,p2:m.p2};
+  if(C.mapGeometry(S.raw,S.image.height,proposed,$('axis').value).some(c=>c.l<=0||!Number.isFinite(c.h))){m.points=[];updateModeHint();draw();toast('이 눈금으로는 0 이하 또는 잘못된 가격이 계산됩니다. 입력 가격과 위치를 다시 확인하세요.');return;}
+  saveUndo();S.cal=proposed;setMode(null);recompute();toast('눈금을 지정했습니다. 이미지 가격은 근사치로 표시합니다.');return;
+ }
+ if(m.type==='manual'){
+  if(m.index==null&&!m.points.length&&S.raw.some(c=>Math.abs(c.x-p.x)<Math.max(2,c.width*.45))){toast('이 위치에는 이미 후보가 있습니다. 기존 봉을 선택해 직접 고치거나 먼저 삭제하세요.');return;}
+  if(m.points.length&&p.y<m.points.at(-1).y){toast('위에서 아래 순서로 선택해야 합니다. 이전 위치보다 아래쪽을 클릭하세요.');return;}
+  m.points.push(p);if(m.points.length<4){updateModeHint();draw();return;}
+  const [hi,bt,bb,lo]=m.points;if(lo.y-hi.y<3){toast('고가와 저가가 너무 가깝습니다. 확대 후 다시 표시하세요.');setMode(null);return;}
+  saveUndo();const c={x:m.index==null?hi.x:S.raw[m.index].x,yH:hi.y,yL:lo.y,yO:m.dir>0?bb.y:bt.y,yC:m.dir>0?bt.y:bb.y,width:S.raw[m.index]?.width||C.median(S.raw.map(x=>x.width))||8,dir:m.dir,quality:'manual',source:'image',hollow:false};
+  if(m.index==null)S.raw.push(c);else S.raw[m.index]=c;S.raw.sort((a,b)=>a.x-b.x);S.selected=S.raw.indexOf(c);refreshGaps();setMode(null);recompute();toast('네 위치를 반영했습니다. 캔들 방향과 몸통·꼬리를 확인하세요.');
+ }
+}
+function startManual(index=null){if(!S.image||S.source==='csv')return;setPage('analyze');const c=S.raw[index];setMode({type:'manual',index,dir:c?.dir||Number($('manualDirection').value),points:[]});$('chartStage').scrollIntoView({behavior:'smooth',block:'center'});}
+async function detect(record=true){
+ if(!S.image||S.source==='csv'||S.busy)return;
+ if(record)saveUndo();setMode(null);S.busy=true;$('detectBtn').textContent='인식 중…';updateMeta();
+ await new Promise(r=>setTimeout(r,35));
+ try{const im=S.image.getContext('2d',{willReadFrequently:true}).getImageData(0,0,S.image.width,S.image.height);const result=C.recognize(im,S.crop,{up:$('upColor').value,down:$('downColor').value,tolerance:Number($('tolerance').value)});S.raw=result.candles;S.warnings=result.warnings;S.selected=Math.max(0,S.raw.length-1);recompute();toast(`${S.raw.length}개 후보를 찾았습니다. 실제 봉 수와 대조하세요.`);}
+ catch(e){S.raw=[];S.warnings=[e.message||'이미지 처리 중 오류가 발생했습니다.'];recompute();toast(S.warnings[0]);}
+ finally{S.busy=false;$('detectBtn').textContent='② 캔들 인식';updateMeta();}
+}
+function clearWork(){S.undo=[];S.raw=[];S.candles=[];S.analysis=[];S.selected=-1;S.cal=null;S.warnings=[];S.mode=null;S.previewCrop=null;$('zoom').value='100';$('canvasWrap').style.width='100%';$('search').value='';$('filter').value='all';$('undoBtn').disabled=true;updateModeHint();}
+async function decodeImage(src){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(new Error('이미지를 읽을 수 없습니다. PNG·JPG·WebP 파일을 확인하세요.'));img.src=src;});}
+async function loadImageFile(file){
+ if(!file)return;if(!['image/png','image/jpeg','image/webp','image/bmp'].includes(file.type)){toast('PNG·JPG·WebP·BMP 이미지 파일을 선택하세요.');return;}
+ if(file.size>25*1024*1024){toast('25MB 이하 이미지로 다시 시도하세요.');return;}
+ const url=URL.createObjectURL(file);
+ try{const img=await decodeImage(url);if(!img.naturalWidth||!img.naturalHeight)throw new Error('이미지 크기를 읽지 못했습니다.');
+  const scale=Math.min(1,3600/Math.max(img.naturalWidth,img.naturalHeight),Math.sqrt(6000000/(img.naturalWidth*img.naturalHeight))),cv=document.createElement('canvas');cv.width=Math.max(1,Math.round(img.naturalWidth*scale));cv.height=Math.max(1,Math.round(img.naturalHeight*scale));cv.getContext('2d',{willReadFrequently:true}).drawImage(img,0,0,cv.width,cv.height);
+  clearWork();S.image=cv;S.fileName=file.name||'붙여넣은 이미지';S.source='image';S.crop={x:0,y:0,w:cv.width,h:cv.height};$('chartName').value=file.name?file.name.replace(/\.[^.]+$/,'').slice(0,80):'붙여넣은 차트';$('inProgress').checked=true;
+  if(scale<1)S.warnings.push('큰 이미지를 성능 제한 때문에 축소했습니다. 촘촘한 봉은 원본에서 가격 영역만 잘라 다시 올리세요.');
+  recompute();setPage('analyze');setMode({type:'crop'});toast('가격 봉 영역만 드래그하세요. 영역 선택 후 자동으로 인식합니다.');
+ }catch(e){toast(e.message);}finally{URL.revokeObjectURL(url);$('imageInput').value='';}
+}
+function demoData(){
+ // Deliberately synthetic, not market data. Blocks illustrate context-dependent patterns.
+ const closes=[132,130,129,126,124,122,120,118,117,115,114,115,118,120,121,123,125,127,129,131,132,132.2,130,127,126,124,122,120,118,116,114,112,111,109,107,106,106.3,109,112,114,113,115,117,119,121,122,120.5,121.7];
+ let prev=134;const arr=closes.map((c,i)=>{const o=prev+(i%3-1)*.5,up=1.0+(i%4)*.27,down=.9+(i%5)*.19,bar={o,h:Math.max(o,c)+up,l:Math.min(o,c)-down,c};prev=c;return bar;});
+ // Long lower shadow after decline, long upper after advance; doji and engulfing examples.
+ arr[10]={o:114.2,h:115.1,l:108.5,c:115};arr[21]={o:132.6,h:139,l:131.6,c:131.8};
+ arr[31]={o:114,h:114.6,l:110.9,c:112};arr[32]={o:111.2,h:115.3,l:110.7,c:114.7};
+ arr[35]={o:108,h:108.5,l:101,c:107.6};arr[36]={o:106.8,h:109.6,l:104.2,c:106.9};
+ arr[46]={o:122.5,h:127.4,l:120,c:120.7};arr[47]={o:120.9,h:123,l:116.6,c:121.7};return arr;
+}
+function drawDataChart(bars,title,exact=false){
+ const cv=document.createElement('canvas');cv.width=exact?Math.max(1200,Math.min(4500,bars.length*18+140)):1200;cv.height=555;
+ const ctx=cv.getContext('2d',{willReadFrequently:true}),left=54,right=cv.width-78,top=80,bottom=472,lo=Math.min(...bars.map(x=>x.l)),hi=Math.max(...bars.map(x=>x.h)),pad=Math.max((hi-lo)*.13,hi*.005),min=lo-pad,max=hi+pad,yp=v=>bottom-(v-min)/(max-min)*(bottom-top),pitch=(right-left)/bars.length,bw=Math.max(1,Math.min(11,pitch*.52));
+ ctx.fillStyle='#101d30';ctx.fillRect(0,0,cv.width,cv.height);ctx.fillStyle='#e4ecf8';ctx.font='600 18px sans-serif';ctx.fillText(title,30,32);ctx.fillStyle='#8ea3c1';ctx.font='12px sans-serif';ctx.fillText(exact?'USER-PROVIDED OHLC / NOT VERIFIED MARKET DATA':'SYNTHETIC PRACTICE DATA / NOT A REAL STOCK PRICE',30,54);
+ for(let i=0;i<=4;i++){let p=min+(max-min)/4*i,y=yp(p);ctx.strokeStyle='#24344d';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(left,y+.5);ctx.lineTo(right,y+.5);ctx.stroke();ctx.fillStyle='#8195b3';ctx.font='11px sans-serif';ctx.textAlign='left';ctx.fillText(fmt(p),right+10,y+4);}
+ const raw=bars.map((c,i)=>{let x=Math.round(left+pitch*(i+.5))+.5,co=c.c>=c.o?'#e54d60':'#3c82f6',yH=Math.round(yp(c.h)),yL=Math.round(yp(c.l)),yO=Math.round(yp(c.o)),yC=Math.round(yp(c.c));ctx.strokeStyle=co;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,yH);ctx.lineTo(x,yL);ctx.stroke();ctx.fillStyle=co;ctx.fillRect(Math.round(x-bw/2),Math.min(yO,yC),Math.round(bw),Math.max(2,Math.abs(yC-yO)+1));if(i%Math.max(1,Math.floor(bars.length/8))===0){ctx.fillStyle='#7b91b2';ctx.font='11px sans-serif';ctx.textAlign='center';ctx.fillText('#'+String(i+1).padStart(2,'0'),x,bottom+25);}return {...c,x,yH,yL,yO,yC,width:bw,dir:c.c>=c.o?1:-1,quality:exact?'data':'auto',exact,source:exact?'csv':'image',gapBefore:false};});
+ ctx.fillStyle='#7188aa';ctx.font='11px sans-serif';ctx.textAlign='left';ctx.fillText(exact?'값은 업로드한 CSV에서 가져옵니다.':'실제 시세가 아닌 연습 이미지입니다. 가격 숫자는 가상의 상대 값입니다.',30,535);
+ return {image:cv,raw,crop:{x:left-10,y:top-5,w:right-left+20,h:bottom-top+10}};
+}
+async function loadDemo(){
+ if(S.busy)return;clearWork();const d=drawDataChart(demoData(),'CANDLE LAB / PRACTICE CHART');S.image=d.image;S.crop=d.crop;S.source='demo';S.fileName='가상 연습 이미지';$('chartName').value='연습용 가상 차트';$('timeframe').value='일봉';$('inProgress').checked=false;$('axis').value='linear';$('palette').value='kr';setPalette();updateTimeHint();await detect(false);if(S.raw.length>10)select(10);
+}
+function setPalette(){const p=$('palette').value;if(p==='kr'){$('upColor').value='#e54d60';$('downColor').value='#3c82f6';}if(p==='us'){$('upColor').value='#16a085';$('downColor').value='#e54d60';}}
+function updateTimeHint(){const h=$('horizon').value,tf=$('timeframe').value,guide={intraday:'당일 흐름은 분봉, 큰 배경은 일봉도 함께 확인하는 학습 예시입니다.',days:'며칠~몇 주 흐름은 일봉을 중심으로 주봉의 배경을 비교하는 학습 예시입니다.',months:'몇 주~몇 달 흐름은 일봉·주봉을 함께 비교하는 학습 예시입니다.',years:'장기 흐름은 주봉·월봉과 기업의 실적·가치를 함께 살펴보는 학습 예시입니다.'};$('timeHint').textContent=`현재 ${tf}: 캔들 1개가 ${({'1분봉':'1분','5분봉':'5분','15분봉':'15분','60분봉':'1시간','일봉':'거래일 하루','주봉':'한 주','월봉':'한 달'})[tf]} 동안의 가격을 담습니다. ${guide[h]} 주기 변경은 이미지 변환이 아닙니다.`;}
+async function importCSV(file){
+ if(!file)return;if(file.size>4*1024*1024){toast('4MB 이하 CSV를 사용하세요.');return;}
+ try{const parsed=C.parseCSV(await file.text()),d=drawDataChart(parsed.candles,file.name.replace(/\.csv$/i,''),true);clearWork();S.image=d.image;S.raw=d.raw;S.crop=d.crop;S.source='csv';S.fileName=file.name;$('chartName').value=file.name.replace(/\.csv$/i,'').slice(0,80);$('axis').value='linear';$('palette').value='kr';setPalette();$('inProgress').checked=true;S.selected=S.raw.length-1;S.warnings=['CSV의 OHLC 수치를 그대로 사용합니다. 마지막 봉이 완료됐으면 진행 중 체크를 해제하세요.'];if(!parsed.dateOrderChecked)S.warnings.push('표준 날짜·시간 형식을 확인하지 못했습니다. CSV가 오래된 봉부터 정렬되어 있는지 직접 확인하세요.');recompute();setPage('analyze');toast(`${S.raw.length}개 OHLC 행을 불러왔습니다. 캡처 결과와 섞지 않습니다.`);}catch(e){toast(e.message);}finally{$('csvInput').value='';}
+}
+function renderLessons(){
+ $('learnProgress').textContent=`학습 ${S.learned.size} / ${C.LESSONS.length}`;
+ $('lessonGrid').innerHTML=C.LESSONS.filter(l=>S.group==='all'||l.group===S.group).map(l=>`<button class="panel lesson-card" data-lesson="${l.id}">${badge(groupNames[l.group],groupClass[l.group])}<div class="lesson-visual">${svgPattern(l.id)}</div><h3>${esc(l.name)}</h3><p>${esc(l.tag)}</p><div class="lesson-bottom"><small>${l.bars}개 봉의 ${l.bars>1?'조합':'형태'}</small><span class="check-mark">${S.learned.has(l.id)?'✓ 학습 완료':'해설 보기 ↗'}</span></div></button>`).join('');
+ $('lessonGrid').querySelectorAll('[data-lesson]').forEach(b=>b.onclick=()=>openLesson(b.dataset.lesson));
+}
+function openLesson(id){
+ const l=C.lesson(id);if(!l)return;$('lessonModalTitle').textContent=l.name;
+ const hits=S.analysis.filter(a=>a.ids.includes(id)).map(a=>a.index);
+ $('lessonModalBody').innerHTML=`<div class="modal-visual">${svgPattern(id,true)}</div>${badge(groupNames[l.group],groupClass[l.group])} ${badge(l.bars+'개 봉')}<div class="section"><h3>쉽게 풀어 읽기</h3><p>${esc(l.story)}</p></div><div class="detail-quote">${esc(l.remember)}</div><div class="section"><h3>이 앱의 판독 조건</h3><p>${esc(l.rule)}</p></div><div class="section"><h3>반드시 함께 볼 것</h3><p>${esc(l.watch)}</p></div><div class="section"><h3>현재 차트에서 찾아보기</h3><p>${hits.length?`현재 인식 결과에서 ${hits.length}개 후보가 있습니다. 진행 중인 봉은 잠정 결과입니다.`:'현재 인식 결과에서는 이 조건에 맞는 후보가 없습니다.'}</p>${hits.length?'<div class="actions" style="margin-top:10px">'+hits.slice(0,40).map(i=>`<button class="btn small" data-hit="${i}">#${i+1}${S.candles[i].partial?' 잠정':''}</button>`).join('')+'</div>':''}</div><div class="notice">이 이름은 형태 분류입니다. 상승·하락 확률이나 수익률을 뜻하지 않습니다. 그림은 이해를 위한 개념도입니다.</div><div class="modal-actions"><button class="btn primary" id="markLearned">${S.learned.has(id)?'학습 완료 해제':'이 패턴 익혔어요 ✓'}</button><button class="btn" data-close="lessonModal">닫기</button></div>`;
+ $('markLearned').onclick=()=>{if(S.learned.has(id))S.learned.delete(id);else S.learned.add(id);try{localStorage.setItem('candleLabLearnedV1',JSON.stringify([...S.learned]));}catch{}renderLessons();$('markLearned').textContent=S.learned.has(id)?'학습 완료 해제':'이 패턴 익혔어요 ✓';};
+ $('lessonModalBody').querySelectorAll('[data-hit]').forEach(b=>b.onclick=()=>{$('lessonModal').close();setPage('analyze');select(Number(b.dataset.hit));$('chartStage').scrollIntoView({behavior:'smooth',block:'center'});});
+ $('lessonModalBody').querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).close());if(!$('lessonModal').open)$('lessonModal').showModal();
+}
+const QUESTIONS=[
+ {q:'몸통은 어떤 두 가격의 차이를 보여줄까요?',choices:['고가와 저가','시가와 종가','전일 종가와 오늘 종가','거래량과 가격'],answer:1,why:'몸통은 같은 기간의 시가와 종가 사이입니다. 꼬리 끝은 그 기간의 고가와 저가입니다.',pattern:'bull'},
+ {q:'전날 종가 100, 오늘 시가 110, 오늘 종가 105라면?',choices:['전날보다 올랐으므로 양봉','전날보다 올랐지만 음봉','전날보다 내렸으므로 음봉','고가를 알아야 방향을 판단'],answer:1,why:'양봉·음봉은 전일 종가가 아니라 같은 봉의 시가와 종가를 비교합니다. 105는 110보다 낮으므로 음봉입니다.'},
+ {q:'하락 흐름 뒤에 이 모양이 나오면 어떤 후보일까요?',choices:['망치형','유성형','교수형','민머리 음봉'],answer:0,why:'긴 아래꼬리와 작은 위쪽 몸통이 하락 뒤에 나오면 망치형 후보입니다. 다음 봉의 움직임도 확인해야 합니다.',pattern:'hammer'},
+ {q:'망치와 같은 모양이지만, 상승 흐름 뒤라면?',choices:['이름과 의미가 늘 같다','교수형 후보','무조건 강한 매수','샛별형'],answer:1,why:'같은 아래꼬리 모양도 앞선 추세가 상승이면 교수형 후보입니다. 모양보다 맥락이 중요합니다.',pattern:'hanging'},
+ {q:'이처럼 몸통이 거의 없다면 무엇을 뜻할까요?',choices:['곧바로 상승한다','가격이 한 번도 움직이지 않았다','시가와 종가가 비슷하다','거래량이 0이다'],answer:2,why:'도지는 출발과 마감 가격이 비슷하다는 뜻입니다. 긴 꼬리가 있다면 그 사이에 큰 가격 범위로 거래됐을 수 있습니다.',pattern:'doji'},
+ {q:'상승 장악형은 무엇을 감싸야 할까요?',choices:['이전 봉의 몸통','이전 봉의 모든 꼬리까지','이전 10봉 전체','거래량 막대'],answer:0,why:'핵심은 뒤 양봉 몸통이 앞 음봉 몸통을 감싸는 것입니다. 이 앱은 앞선 하락 추세도 확인합니다.',pattern:'engulf_bull'},
+ {q:'5분봉의 망치형 하나만으로 몇 달간 상승을 알 수 있을까요?',choices:['가능하다','불가능하다','빨간색이면 가능하다','삼성전자는 가능하다'],answer:1,why:'5분봉은 해당 5분의 기록입니다. 몇 달의 방향을 보장하지 않습니다. 시간 단위가 다른 차트와 기업·시장 정보를 함께 봐야 합니다.'},
+ {q:'상승 뒤 이 형태가 나타났습니다. 가장 알맞은 해석은?',choices:['고가에서 밀린 유성형 후보','하락 끝의 역망치형으로 확정','무조건 다음 날 하락','장대양봉'],answer:0,why:'상승 뒤의 긴 위꼬리는 유성형 후보입니다. 이후 하락 확인이 없으면 추세 전환을 단정할 수 없습니다.',pattern:'shooting'},
+ {q:'현재 진행 중인 마지막 봉은 어떻게 다뤄야 할까요?',choices:['완성 봉과 똑같이 확정','모양이 바뀔 수 있어 잠정 표시','삭제해야만 한다','거래량만 보면 확정 가능'],answer:1,why:'진행 중에는 고가·저가·현재 가격이 바뀔 수 있습니다. 이 앱은 마지막 진행 봉을 완성 봉 통계에서 제외합니다.'},
+ {q:'‘음봉 → 작은 봉 → 회복 양봉’에 앞선 하락과 몸통 갭도 맞는다면?',choices:['흑삼병','샛별형 후보','교수형','도지형 하나'],answer:1,why:'샛별형은 세 봉의 조합입니다. 이 앱은 첫 음봉 아래로 떨어진 작은 몸통과, 첫 몸통 절반 이상 회복도 요구합니다.',pattern:'morning'},
+ {q:'캡처에서 40개가 인식됐습니다. 가장 먼저 할 일은?',choices:['40개가 정확하다고 가정','실제 봉과 번호·개수를 대조','상승 후보만 합산해 매수','잘린 봉도 동일하게 신뢰'],answer:1,why:'색상·중첩·해상도 때문에 누락과 오인식이 가능합니다. 인식과 해석은 별개이며, 먼저 입력이 맞는지 확인해야 합니다.'},
+ {q:'여러 패턴이 동시에 나왔을 때 올바른 태도는?',choices:['패턴 수가 많으면 수익 보장','같은 봉의 중복 신호도 별도 확률로 더한다','가격·추세·후속 움직임과 위험을 함께 확인한다','한 번에 전액 매수한다'],answer:2,why:'패턴들은 같은 가격 정보에서 나온 서로 겹치는 신호일 수 있습니다. 개수나 임의 점수를 승률처럼 사용하면 안 됩니다.'}
+];
+function renderQuiz(){
+ const {index,answers}=S.quiz;$('quizProgress').innerHTML=QUESTIONS.map((_,i)=>`<span class="quiz-dot ${i<answers.length?'done':''}"></span>`).join('');
+ if(index>=QUESTIONS.length){const right=answers.filter((a,i)=>a===QUESTIONS[i].answer).length;$('quizCard').innerHTML=`<div class="quiz-end"><div class="eyebrow">PRACTICE COMPLETE</div><strong>${right}<small style="font-size:22px;color:var(--muted)"> / ${QUESTIONS.length}</small></strong><h2 style="margin-top:16px">이제 차트에서 직접 찾아보세요.</h2><p style="color:var(--muted);font-size:13px">이 점수는 학습 확인용이며 투자 능력이나 수익률을 뜻하지 않습니다.</p><div class="actions" style="justify-content:center;margin-top:25px"><button class="btn primary" id="quizAgain">다시 풀기</button><button class="btn" id="quizToChart">내 차트 보기</button></div></div>`;$('quizAgain').onclick=restartQuiz;$('quizToChart').onclick=()=>setPage('analyze');return;}
+ const q=QUESTIONS[index],answered=answers.length>index,picked=answers[index];
+ $('quizCard').innerHTML=`<div class="eyebrow">QUESTION ${String(index+1).padStart(2,'0')} / ${QUESTIONS.length}</div><h2>${esc(q.q)}</h2>${q.pattern?`<div class="quiz-figure">${svgPattern(q.pattern)}</div>`:''}<div class="quiz-options">${q.choices.map((t,i)=>`<button class="quiz-option ${answered&&i===q.answer?'correct':answered&&i===picked?'wrong':''}" data-answer="${i}" ${answered?'disabled':''}>${String.fromCharCode(65+i)}. ${esc(t)}</button>`).join('')}</div>${answered?`<div class="quiz-feedback"><b>${picked===q.answer?'맞았습니다.':'괜찮습니다. 이유를 익혀 보세요.'}</b><br>${esc(q.why)}</div><div class="actions" style="margin-top:18px;justify-content:flex-end"><button class="btn primary" id="nextQuestion">${index===QUESTIONS.length-1?'결과 보기':'다음 문제 →'}</button></div>`:'<p style="color:var(--muted);font-size:11px;margin-top:15px">정답을 선택하면 이유를 바로 확인할 수 있습니다.</p>'}`;
+ $('quizCard').querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{S.quiz.answers.push(Number(b.dataset.answer));renderQuiz();});if($('nextQuestion'))$('nextQuestion').onclick=()=>{S.quiz.index++;renderQuiz();};
+}
+function restartQuiz(){S.quiz={index:0,answers:[]};renderQuiz();}
+function basename(){return ($('chartName').value||'캔들분석').replace(/[^\p{L}\p{N}_.-]+/gu,'_').slice(0,60);}
+function downloadBlob(content,type,filename){const b=content instanceof Blob?content:new Blob([content],{type});const url=URL.createObjectURL(b),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
+function csvCell(v){if(typeof v==='number')return String(v);let s=String(v??'');if(/^[=+\-@\t\r]/.test(s))s="'"+s;return '"'+s.replaceAll('"','""')+'"';}
+function exportCSV(){
+ const rows=[['번호','날짜(제공된 경우)','설정 주기','완성 여부','분류','앞선5봉','몸통비율(%)','위꼬리비율(%)','아래꼬리비율(%)','시가','고가','저가','종가/진행가격','가격 출처','인식상태','후속 관찰','유의사항']];
+ S.candles.forEach((c,i)=>{const a=S.analysis[i],r=a.r,ok=a.key!=='uncertain'&&r.range>0;rows.push([i+1,c.date||'',$('timeframe').value,c.partial?'진행 중':'완성으로 입력',a.ids.map(nameOf).join(' / '),trendNames[a.trend],ok?+(r.br*100).toFixed(1):'',ok?+(r.upper/r.range*100).toFixed(1):'',ok?+(r.lower/r.range*100).toFixed(1):'',...['o','h','l','c'].map(k=>c.exact||S.cal?+c[k].toFixed(4):''),c.exact?'사용자 CSV':S.cal?'이미지 눈금 보간 근사':'가격 미지정',quality(c)[0],a.follow,'교육용 형태 분류. 수익·방향 보장 없음. 이미지 인식은 오차 가능.']);});
+ downloadBlob('\uFEFF'+rows.map(r=>r.map(csvCell).join(',')).join('\r\n'),'text/csv;charset=utf-8',basename()+'_전체캔들분석.csv');toast('전체 캔들 분석 CSV를 저장했습니다.');
+}
+function exportReport(){const lines=[`캔들 읽는 연습장 | ${$('chartName').value}`,`자료: ${S.source==='demo'?'가상 예제 (실제 시세 아님)':S.source==='csv'?'사용자 CSV (외부 검증 없음)':'사용자 캡처 (이미지 추정)'}`,`설정 주기: ${$('timeframe').value} / 인식 후보 ${S.raw.length}개`,`가격: ${S.source==='csv'?'제공 수치':S.cal?'사용자 지정 눈금으로 계산한 근사값':'미지정, 추측하지 않음'}`,'교육용 형태 분류이며 상승·하락 확률이나 투자 권유가 아닙니다.',''];S.candles.forEach((c,i)=>{const a=S.analysis[i],l=C.lesson(a.primary);lines.push(`#${i+1} ${c.date||''} ${a.ids.map(nameOf).join(' / ')}${c.partial?' (진행 중·잠정)':''}`,`입력: ${quality(c)[0]} / 앞선 5봉: ${trendNames[a.trend]}`,l?.story||'모호한 형태 또는 변동 없음. 직접 확인 필요.',`후속 관찰: ${a.follow}`,'');});downloadBlob('\uFEFF'+lines.join('\r\n'),'text/plain;charset=utf-8',basename()+'_캔들해설.txt');}
+function exportPNG(){
+ if(!S.image)return;paint();const src=$('chart'),out=document.createElement('canvas');out.width=src.width;out.height=src.height+80;const ctx=out.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,out.width,out.height);ctx.drawImage(src,0,0);ctx.fillStyle='#263653';ctx.font=`${Math.max(12,src.width/100)}px sans-serif`;ctx.fillText('CANDLE LAB / '+(S.source==='demo'?'가상 예제 · 실제 시세 아님':S.source==='csv'?'사용자 제공 OHLC':'이미지 후보 · 번호와 실제 봉 대조 필요'),20,src.height+30);ctx.fillStyle='#718198';ctx.fillText('형태 학습용 · 투자 추천/상승 확률 아님 · 날짜 자동 판독 없음',20,src.height+57);out.toBlob(b=>{if(b)downloadBlob(b,'image/png',basename()+'_번호표시.png');},'image/png');}
+function exportProject(){if(!S.image)return;const p={format:'candle-lab-project',version:1,name:$('chartName').value,source:S.source,fileName:S.fileName,image:S.image.toDataURL('image/png'),raw:S.raw,crop:S.crop,cal:S.cal,warnings:S.warnings,settings:{timeframe:$('timeframe').value,horizon:$('horizon').value,inProgress:$('inProgress').checked,axis:$('axis').value,up:$('upColor').value,down:$('downColor').value,tolerance:$('tolerance').value},selected:S.selected};downloadBlob(JSON.stringify(p),'application/json',basename()+'_프로젝트.json');toast('이미지와 분석 설정을 프로젝트 파일에 저장했습니다.');}
+async function importProject(file){
+ if(!file)return;try{
+  if(file.size>35*1024*1024)throw new Error('프로젝트 파일은 35MB 이하여야 합니다.');const p=JSON.parse(await file.text());
+  if(p.format!=='candle-lab-project'||p.version!==1||!Array.isArray(p.raw)||p.raw.length>2000||typeof p.image!=='string'||!p.image.startsWith('data:image/png;base64,'))throw new Error('지원하는 프로젝트 파일이 아닙니다.');
+  const img=await decodeImage(p.image);if(img.naturalWidth*img.naturalHeight>6500000||img.naturalWidth>5000||img.naturalHeight>5000)throw new Error('프로젝트 이미지가 허용 크기를 넘습니다.');
+  const W=img.naturalWidth,H=img.naturalHeight,finite=v=>typeof v==='number'&&Number.isFinite(v),raw=p.raw.map(c=>{
+   for(const k of ['x','yH','yL','yO','yC','width'])if(!finite(c[k]))throw new Error('프로젝트 좌표 값이 잘못되었습니다.');
+   if(c.x<0||c.x>=W||c.width<1||c.width>200||c.yH<0||c.yL>H||c.yH>Math.min(c.yO,c.yC)||c.yL<Math.max(c.yO,c.yC))throw new Error('프로젝트 봉의 경계가 잘못되었습니다.');
+   if(c.exact&&(!['o','h','l','c'].every(k=>finite(c[k])&&c[k]>0)||c.h<Math.max(c.o,c.c)||c.l>Math.min(c.o,c.c)))throw new Error('OHLC 값이 잘못되었습니다.');
+   return {x:c.x,yH:c.yH,yL:c.yL,yO:c.yO,yC:c.yC,width:c.width,dir:c.dir===-1?-1:1,quality:['auto','low','manual','data'].includes(c.quality)?c.quality:'low',source:c.exact?'csv':'image',exact:!!c.exact,o:c.o,h:c.h,l:c.l,c:c.c,date:typeof c.date==='string'?c.date.slice(0,100):'',volume:c.volume!=null&&finite(c.volume)&&c.volume>=0?c.volume:null,gapBefore:!!c.gapBefore,hollow:!!c.hollow};
+  }).sort((a,b)=>a.x-b.x);
+  const cr=p.crop;if(!cr||!['x','y','w','h'].every(k=>finite(cr[k]))||cr.x<0||cr.y<0||cr.w<1||cr.h<1||cr.x+cr.w>W+1||cr.y+cr.h>H+1)throw new Error('선택 영역이 잘못되었습니다.');
+  if(p.cal&&(!['y1','y2','p1','p2'].every(k=>finite(p.cal[k]))||p.cal.y1<0||p.cal.y2>H||p.cal.y2<=p.cal.y1||p.cal.p1<=p.cal.p2||p.cal.p2<=0))throw new Error('가격 눈금 값이 잘못되었습니다.');
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;cv.getContext('2d',{willReadFrequently:true}).drawImage(img,0,0);
+  clearWork();S.image=cv;S.raw=raw;S.crop={...cr};S.cal=p.cal?{...p.cal}:null;S.source=['image','csv','demo'].includes(p.source)?p.source:'image';S.fileName=String(p.fileName||'불러온 프로젝트').slice(0,100);S.selected=Number.isInteger(p.selected)?p.selected:raw.length-1;S.warnings=Array.isArray(p.warnings)?p.warnings.filter(x=>typeof x==='string').map(x=>x.slice(0,400)).slice(0,10):[];
+  $('chartName').value=String(p.name||'불러온 프로젝트').slice(0,80);const v=p.settings||{};for(const [id,field] of [['timeframe','timeframe'],['horizon','horizon'],['axis','axis'],['tolerance','tolerance']]){if([...$(id).options].some(o=>o.value===v[field]))$(id).value=v[field];}
+  $('inProgress').checked=!!v.inProgress;for(const [id,field] of [['upColor','up'],['downColor','down']])if(/^#[0-9a-f]{6}$/i.test(v[field]||''))$(id).value=v[field];$('palette').value='custom';recompute();updateTimeHint();$('saveModal').close();setPage('analyze');toast('프로젝트를 복원했습니다. 원본 파일은 변경하지 않았습니다.');
+ }catch(e){toast('불러오기 실패: '+e.message);}finally{$('projectInput').value='';}
+}
+function exportTemplate(){const rows=['date,open,high,low,close,volume'];demoData().slice(0,12).forEach((c,i)=>rows.push(`2025-01-${String(i+1).padStart(2,'0')},${c.o},${c.h},${c.l},${c.c},${10000+i*500}`));downloadBlob('\uFEFF'+rows.join('\r\n'),'text/csv;charset=utf-8','가상데이터_OHLC_형식예제.csv');toast('형식 확인용 가상 데이터를 저장했습니다. 실제 거래일·시세가 아닙니다.');}
+// Event wiring: all image and file operations remain local. There are no fetch/XHR/WebSocket calls.
+document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>setPage(b.dataset.page));
+for(const id of ['uploadBtn','dropzone'])$(id).onclick=()=>$('imageInput').click();$('dropzone').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('imageInput').click();}};
+$('imageInput').onchange=e=>loadImageFile(e.target.files[0]);$('demoBtn').onclick=loadDemo;
+$('cropBtn').onclick=()=>setMode({type:'crop'});$('detectBtn').onclick=()=>detect();$('addBtn').onclick=()=>startManual();$('undoBtn').onclick=undo;$('cancelMode').onclick=()=>{dragging=null;setMode(null);};
+$('zoom').oninput=()=>{$('canvasWrap').style.width=$('zoom').value+'%';draw();};$('showNumbers').onchange=draw;
+$('palette').onchange=()=>{setPalette();toast('색상 규칙을 바꿨습니다. 캔들 인식을 다시 실행하세요.');};
+$('upColor').onchange=$('downColor').onchange=()=>{$('palette').value='custom';toast('새 색상은 다음 캔들 인식부터 적용됩니다.');};
+$('pickUp').onclick=()=>setMode({type:'pickUp'});$('pickDown').onclick=()=>setMode({type:'pickDown'});
+$('axis').onchange=()=>{recompute();toast('가격축 설정을 바꿨습니다. 원본 차트의 축과 일치하는지 확인하세요.');};
+$('calibrateBtn').onclick=()=>{$('calAxisName').textContent=$('axis').value==='log'?'로그':'일반(선형)';$('calModal').showModal();};
+$('startCal').onclick=()=>{const p1=Number($('calTop').value),p2=Number($('calBottom').value);if(!Number.isFinite(p1)||!Number.isFinite(p2)||p2<=0||p1<=p2){toast('위쪽 가격 > 아래쪽 가격 > 0으로 입력하세요.');return;}$('calModal').close();setMode({type:'cal',p1,p2,points:[]});$('chartStage').scrollIntoView({behavior:'smooth',block:'center'});};
+$('resetCalBtn').onclick=()=>{saveUndo();S.cal=null;recompute();};
+$('csvBtn').onclick=()=>$('csvInput').click();$('csvInput').onchange=e=>importCSV(e.target.files[0]);$('csvTemplateBtn').onclick=exportTemplate;
+$('inProgress').onchange=recompute;$('timeframe').onchange=()=>{updateTimeHint();renderDetail();};$('horizon').onchange=updateTimeHint;
+$('search').oninput=renderTable;$('filter').onchange=renderTable;$('saveBtn').onclick=()=>$('saveModal').showModal();
+$('exportCSV').onclick=exportCSV;$('exportPNG').onclick=exportPNG;$('exportReport').onclick=exportReport;$('exportProject').onclick=exportProject;$('importProjectBtn').onclick=()=>$('projectInput').click();$('projectInput').onchange=e=>importProject(e.target.files[0]);
+$('restartQuiz').onclick=restartQuiz;document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).close());
+$('lessonFilters').querySelectorAll('[data-group]').forEach(b=>b.onclick=()=>{S.group=b.dataset.group;$('lessonFilters').querySelectorAll('.chip').forEach(x=>x.classList.toggle('active',x===b));renderLessons();});
+for(const ev of ['dragenter','dragover'])$('dropzone').addEventListener(ev,e=>{e.preventDefault();$('dropzone').classList.add('drag');});for(const ev of ['dragleave','drop'])$('dropzone').addEventListener(ev,e=>{e.preventDefault();$('dropzone').classList.remove('drag');});$('dropzone').addEventListener('drop',e=>loadImageFile(e.dataTransfer.files[0]));
+window.addEventListener('dragover',e=>{if([...e.dataTransfer.types].includes('Files'))e.preventDefault();});window.addEventListener('drop',e=>e.preventDefault());
+window.addEventListener('paste',e=>{if(e.target.matches('input,textarea'))return;const item=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith('image/'));if(item){e.preventDefault();loadImageFile(item.getAsFile());}});
+window.addEventListener('keydown',e=>{if(e.key==='Escape'){dragging=null;setMode(null);}if(e.target.matches('input,select,textarea')||document.querySelector('dialog[open]'))return;if(e.key==='ArrowLeft'&&S.selected>0&&!$('page-analyze').hidden){e.preventDefault();select(S.selected-1);}if(e.key==='ArrowRight'&&S.selected<S.raw.length-1&&!$('page-analyze').hidden){e.preventDefault();select(S.selected+1);}});
+window.addEventListener('resize',draw);
+try{const saved=JSON.parse(localStorage.getItem('candleLabLearnedV1')||'[]');if(Array.isArray(saved))S.learned=new Set(saved.filter(x=>C.lesson(x)));}catch{}
+$('basicFigure').innerHTML='<svg viewBox="0 0 150 180" aria-label="캔들의 고가, 종가, 시가, 저가"><path d="M55 20v140" stroke="#df5063" stroke-width="2"/><rect x="40" y="53" width="30" height="61" rx="2" fill="#df5063"/><path d="M58 20h25m-10 33h12m-12 61h12m-27 46h25" stroke="#a8b4c7"/><g font-family="sans-serif" font-size="11" fill="#74849c"><text x="90" y="24">고가</text><text x="90" y="57">종가</text><text x="90" y="118">시가</text><text x="90" y="164">저가</text></g></svg><div><p><b style="color:var(--ink)">양봉의 예시</b><br>빨강 = 양봉, 파랑 = 음봉<br>이 앱의 표시 색상입니다.<br>원본 앱 색상은 다를 수 있어요.<br><br>음봉에서는 몸통 위가 시가,<br>몸통 아래가 종가입니다.</p></div>';
+updateTimeHint();renderLessons();renderQuiz();loadDemo();
+// Minimal read-only/debug surface for reproducible local browser tests. Not a network API.
+window.CandleLab={state:S,demoData,drawDataChart,loadDemo,recompute,select,renderLessons,renderQuiz,detect,loadImageFile,importCSV,importProject,setPage,exportProject,exportCSV,exportPNG,exportReport,paint,QUESTIONS};
+})();
+</script>
+</body>
+</html>
