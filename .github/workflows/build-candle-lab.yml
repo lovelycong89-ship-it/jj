@@ -1,0 +1,46 @@
+name: Build public Candle Lab
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'candle-lab/app-*.b64'
+      - '.github/workflows/build-candle-lab.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore and verify the original standalone app
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64, gzip, hashlib
+          root = Path('candle-lab')
+          parts = [(root / f'app-{i}.b64').read_text(encoding='ascii') for i in range(1, 5)]
+          parts[1] = parts[1].replace('JjM5WYo', 'JjM9WYo')
+          data = gzip.decompress(base64.b64decode(''.join(parts), validate=True))
+          expected = '6c4fe919f7854acdaaba03314a06aaabc3808bc37028525a464ba9e85ee6b294'
+          assert len(data) == 124428, 'Unexpected application size'
+          assert hashlib.sha256(data).hexdigest() == expected, 'Application integrity check failed'
+          (root / 'app-2.b64').write_text(parts[1], encoding='ascii')
+          (root / 'index.html').write_bytes(data)
+          print('Verified original application:', len(data), 'bytes; SHA256', expected)
+          PY
+      - name: Publish verified static HTML
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add candle-lab/index.html candle-lab/app-2.b64
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish verified standalone Candle Lab web application'
+            git push origin HEAD:main
+          fi
